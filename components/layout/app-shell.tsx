@@ -10,7 +10,6 @@ import { BillingStatusModal } from "@/components/BillingStatusModal";
 import { Button } from "@/components/ui/button";
 import { getMedicationReminders, subscribeToMedicationReminders } from "@/lib/medication-reminders";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
-import { useIsMobile } from "@/lib/hooks/useIsMobile";
 import { getInitials } from "@/lib/utils";
 
 const NAV_ITEMS = [
@@ -51,7 +50,6 @@ export function AppShell({
   email?: string | null;
 }) {
   const router = useRouter();
-  const isMobile = useIsMobile();
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
@@ -80,12 +78,10 @@ export function AppShell({
   const allNotifications = [...medicationNotifications, ...notifications];
 
   useEffect(() => {
-    if (isMobile) {
-      setSidebarOpen(false);
-    }
+    setSidebarOpen(false);
     setNotificationsOpen(false);
     setProfileMenuOpen(false);
-  }, [isMobile, pathname]);
+  }, [pathname]);
 
   async function handleSignOut() {
     try {
@@ -100,16 +96,16 @@ export function AppShell({
 
   return (
     <div className="flex min-h-screen bg-[linear-gradient(180deg,#F8FAFC_0%,#EEF4FF_100%)] selection:bg-blue-500/20">
-      {isMobile && sidebarOpen ? (
+      {sidebarOpen ? (
         <div
-          className="fixed inset-0 z-40 bg-slate-900/45 backdrop-blur-sm"
+          className="fixed inset-0 z-40 bg-slate-900/45 backdrop-blur-sm lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       ) : null}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-72 flex-col border-r border-slate-200 bg-white/96 backdrop-blur transition-transform duration-300 ${
-          sidebarOpen || !isMobile ? "translate-x-0" : "-translate-x-full"
+        className={`fixed inset-y-0 left-0 z-50 flex w-72 flex-col border-r border-slate-200 bg-white/96 backdrop-blur transition-transform duration-300 lg:translate-x-0 ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
         <div className="flex h-20 items-center border-b border-slate-200 px-6">
@@ -122,14 +118,12 @@ export function AppShell({
               <p className="text-xs text-slate-500">Your Health, Organised.</p>
             </div>
           </Link>
-          {isMobile ? (
-            <button
-              className="ml-auto inline-flex h-11 w-11 items-center justify-center rounded-xl text-slate-500 active:scale-95"
-              onClick={() => setSidebarOpen(false)}
-            >
-              <X className="h-5 w-5" />
-            </button>
-          ) : null}
+          <button
+            className="ml-auto inline-flex h-11 w-11 items-center justify-center rounded-xl text-slate-500 active:scale-95 lg:hidden"
+            onClick={() => setSidebarOpen(false)}
+          >
+            <X className="h-5 w-5" />
+          </button>
         </div>
 
         <nav className="flex-1 space-y-1 overflow-y-auto px-4 py-6">
@@ -163,18 +157,18 @@ export function AppShell({
         </div>
       </aside>
 
-      <div className={`flex min-w-0 flex-1 flex-col ${!isMobile ? "ml-72" : ""}`}>
+      <aside className="hidden w-72 shrink-0 lg:block" aria-hidden="true" />
+
+      <div className="flex min-w-0 flex-1 flex-col lg:ml-0">
         <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/85 backdrop-blur-xl">
           <div className="mx-auto flex min-h-20 w-full max-w-[1400px] items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-8">
             <div className="flex min-w-0 items-center gap-3 sm:gap-4">
-              {isMobile ? (
-                <button
-                  className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 text-slate-700 active:scale-95"
-                  onClick={() => setSidebarOpen(true)}
-                >
-                  <Menu className="h-5 w-5" />
-                </button>
-              ) : null}
+              <button
+                className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 text-slate-700 active:scale-95 lg:hidden"
+                onClick={() => setSidebarOpen(true)}
+              >
+                <Menu className="h-5 w-5" />
+              </button>
               <div className="min-w-0">
                 <p className="text-xs font-semibold uppercase tracking-[0.24em] text-blue-600">Carespace</p>
                 <h1 className="truncate text-base font-semibold capitalize tracking-tight text-slate-950 sm:text-xl">
