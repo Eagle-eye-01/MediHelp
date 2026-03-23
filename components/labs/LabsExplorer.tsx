@@ -93,8 +93,8 @@ export function LabsExplorer({
               : locationError || "Location permission not available. Showing the strongest default lab matches only."}
           </p>
         </div>
-      <div className="flex h-full flex-col gap-4 lg:flex-row">
-        <div className="w-full flex-shrink-0 lg:w-64">
+      <div className="flex h-full flex-col gap-4 xl:flex-row">
+        <div className="w-full flex-shrink-0 xl:w-64">
           <FilterPanel description="Choose the test type you need." title="Lab Filters">
             <div className="space-y-2">
               <Label>Type of test</Label>
@@ -113,8 +113,8 @@ export function LabsExplorer({
             </div>
           </FilterPanel>
         </div>
-        <div className="flex min-w-0 flex-1 flex-col gap-4 sm:flex-row">
-          <div className="w-full space-y-4 overflow-y-auto sm:w-2/5 lg:w-1/3">
+        <div className="flex min-w-0 flex-1 flex-col gap-4 lg:flex-row">
+          <div className="w-full space-y-4 lg:w-2/5 xl:max-h-[920px] xl:overflow-y-auto">
             {filteredLabs.length ? (
               filteredLabs.map((lab, index) => (
                 <LabCard
@@ -137,7 +137,7 @@ export function LabsExplorer({
               />
             )}
           </div>
-          <div className="min-w-0 flex-1 overflow-y-auto">
+          <div className="min-w-0 flex-1 xl:max-h-[920px] xl:overflow-y-auto">
             {selectedLab ? (
               <div className="space-y-4">
                 <div className="rounded-2xl border border-slate-100 bg-white p-5">

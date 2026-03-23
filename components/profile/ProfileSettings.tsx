@@ -134,7 +134,7 @@ export function ProfileSettings({
 
   return (
     <div className="max-w-2xl mx-auto flex flex-col gap-6">
-      <section className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm flex flex-col gap-4 sm:flex-row">
+      <section className="flex flex-col gap-4 rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm sm:flex-row sm:p-6">
         <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-blue-100 text-2xl font-semibold text-primary">
           {(form.name || "MH")
             .split(" ")
@@ -155,7 +155,7 @@ export function ProfileSettings({
           </Button>
         </div>
       </section>
-      <Card className="space-y-4 rounded-[28px] border border-slate-200 p-6 shadow-sm">
+      <Card className="space-y-4 rounded-[28px] border border-slate-200 p-5 shadow-sm sm:p-6">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div className="space-y-2">
             <Label>Name</Label>
@@ -184,11 +184,11 @@ export function ProfileSettings({
             <Input onChange={(event) => setForm((current) => ({ ...current, email: event.target.value }))} type="email" value={form.email} />
           </div>
         </div>
-        <div className="flex justify-end">
-          <Button onClick={handleSaveProfile}>Save Profile</Button>
+        <div className="flex justify-stretch sm:justify-end">
+          <Button className="w-full sm:w-auto" onClick={handleSaveProfile}>Save Profile</Button>
         </div>
       </Card>
-      <Card className="space-y-4 rounded-[28px] border border-slate-200 p-6 shadow-sm" id="password-section">
+      <Card className="space-y-4 rounded-[28px] border border-slate-200 p-5 shadow-sm sm:p-6" id="password-section">
         <div>
           <h2 className="text-lg font-semibold text-slate-900">Password change</h2>
           <p className="mt-1 text-sm text-slate-500">Choose a strong new password for your account.</p>
@@ -201,21 +201,21 @@ export function ProfileSettings({
             value={form.password}
           />
         </div>
-        <div className="flex justify-end">
-          <Button onClick={handleChangePassword} variant="secondary">
+        <div className="flex justify-stretch sm:justify-end">
+          <Button className="w-full sm:w-auto" onClick={handleChangePassword} variant="secondary">
             Update Password
           </Button>
         </div>
       </Card>
-      <Card className="space-y-4 rounded-[28px] border border-rose-200 p-6 shadow-sm">
+      <Card className="space-y-4 rounded-[28px] border border-rose-200 p-5 shadow-sm sm:p-6">
         <div>
           <h2 className="text-lg font-semibold text-slate-900">Delete account</h2>
           <p className="mt-1 text-sm text-slate-500">
             This permanently removes your profile and requires the service role key to be configured.
           </p>
         </div>
-        <div className="flex justify-end">
-          <Button onClick={handleDeleteAccount} variant="outline">
+        <div className="flex justify-stretch sm:justify-end">
+          <Button className="w-full sm:w-auto" onClick={handleDeleteAccount} variant="outline">
             Delete Account
           </Button>
         </div>

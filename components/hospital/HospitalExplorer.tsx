@@ -152,8 +152,8 @@ export function HospitalExplorer({
                 : locationError || "Location permission not available. Showing the strongest default hospital matches only."}
           </p>
         </div>
-        <div className="flex h-full flex-col gap-4 lg:flex-row">
-          <div className="w-full flex-shrink-0 lg:w-64">
+        <div className="flex h-full flex-col gap-4 xl:flex-row">
+          <div className="w-full flex-shrink-0 xl:w-64">
             <FilterPanel
               description="Narrow the list by condition or surgery focus."
               title="Hospital Filters"
@@ -176,8 +176,8 @@ export function HospitalExplorer({
               </div>
             </FilterPanel>
           </div>
-          <div className="flex min-w-0 flex-1 flex-col gap-4 sm:flex-row">
-            <div className="w-full space-y-4 overflow-y-auto sm:w-2/5 lg:w-1/3">
+          <div className="flex min-w-0 flex-1 flex-col gap-4 lg:flex-row">
+            <div className="w-full space-y-4 lg:w-2/5 xl:max-h-[920px] xl:overflow-y-auto">
               {filteredHospitals.length ? (
                 filteredHospitals.map((hospital, index) => (
                   <HospitalCard
@@ -200,7 +200,7 @@ export function HospitalExplorer({
                 />
               )}
             </div>
-            <div className="min-w-0 flex-1 space-y-4 overflow-y-auto">
+            <div className="min-w-0 flex-1 space-y-4 xl:max-h-[920px] xl:overflow-y-auto">
               {selectedHospital ? (
                 <>
                   <div className="rounded-2xl border border-slate-100 bg-white p-5">

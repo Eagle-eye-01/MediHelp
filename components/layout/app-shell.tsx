@@ -165,8 +165,8 @@ export function AppShell({
 
       <div className={`flex min-w-0 flex-1 flex-col ${!isMobile ? "ml-72" : ""}`}>
         <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/85 backdrop-blur-xl">
-          <div className="mx-auto flex h-20 w-full max-w-[1400px] items-center justify-between px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center gap-4">
+          <div className="mx-auto flex min-h-20 w-full max-w-[1400px] items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-8">
+            <div className="flex min-w-0 items-center gap-3 sm:gap-4">
               {isMobile ? (
                 <button
                   className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 text-slate-700 active:scale-95"
@@ -175,15 +175,15 @@ export function AppShell({
                   <Menu className="h-5 w-5" />
                 </button>
               ) : null}
-              <div>
+              <div className="min-w-0">
                 <p className="text-xs font-semibold uppercase tracking-[0.24em] text-blue-600">Carespace</p>
-                <h1 className="text-lg font-semibold capitalize tracking-tight text-slate-950 sm:text-xl">
+                <h1 className="truncate text-base font-semibold capitalize tracking-tight text-slate-950 sm:text-xl">
                   {pathname === "/" ? "Home" : pathname.replace("/", "").replace("-", " ")}
                 </h1>
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex shrink-0 items-center gap-2 sm:gap-3">
               <div className="relative">
                 <Button
                   className="relative rounded-full text-slate-600 hover:text-slate-950"
@@ -196,7 +196,7 @@ export function AppShell({
                   <Bell className="h-5 w-5" />
                 </Button>
                 {notificationsOpen ? (
-                  <div className="absolute right-0 mt-3 w-[22rem] rounded-[28px] border border-slate-200 bg-white p-3 shadow-[0_30px_90px_-40px_rgba(15,23,42,0.45)]">
+                  <div className="absolute right-0 mt-3 w-[min(22rem,calc(100vw-1.5rem))] rounded-[28px] border border-slate-200 bg-white p-3 shadow-[0_30px_90px_-40px_rgba(15,23,42,0.45)]">
                     <div className="flex items-center justify-between px-2 py-1">
                       <div>
                         <p className="text-sm font-semibold text-slate-950">Notifications</p>
@@ -235,21 +235,21 @@ export function AppShell({
 
               <div className="relative">
                 <button
-                  className="group flex items-center gap-3 rounded-full border border-slate-200 bg-white px-2 py-2 pr-3 shadow-sm active:scale-95"
+                  className="group flex items-center gap-2 rounded-full border border-slate-200 bg-white px-2 py-2 pr-2 shadow-sm active:scale-95 sm:gap-3 sm:pr-3"
                   onClick={() => setProfileMenuOpen((value) => !value)}
                   type="button"
                 >
                   <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-tr from-blue-500 to-indigo-500 text-sm font-semibold text-white">
                     {initials}
                   </div>
-                  <div className="hidden text-left sm:block">
+                  <div className="hidden min-w-0 text-left sm:block">
                     <p className="text-sm font-semibold text-slate-950">{name || "MediHelp User"}</p>
                     <p className="text-xs text-slate-500">{email || "Health workspace"}</p>
                   </div>
                   <ChevronDown className="hidden h-4 w-4 text-slate-400 sm:block" />
                 </button>
                 {profileMenuOpen ? (
-                  <div className="absolute right-0 mt-3 w-60 rounded-[28px] border border-slate-200 bg-white p-2 shadow-[0_30px_90px_-40px_rgba(15,23,42,0.45)]">
+                  <div className="absolute right-0 mt-3 w-[min(15rem,calc(100vw-1.5rem))] rounded-[28px] border border-slate-200 bg-white p-2 shadow-[0_30px_90px_-40px_rgba(15,23,42,0.45)]">
                     <Link
                       className="flex min-h-[44px] items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium text-slate-700 hover:bg-slate-50"
                       href="/profile"
@@ -291,7 +291,7 @@ export function AppShell({
         </header>
 
         <main className="flex-1">
-          <div className="mx-auto w-full max-w-[1400px] px-4 py-6 sm:px-6 lg:px-8">
+          <div className="mx-auto w-full max-w-[1400px] px-4 py-5 sm:px-6 sm:py-6 lg:px-8">
             {children}
           </div>
         </main>

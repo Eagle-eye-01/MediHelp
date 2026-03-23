@@ -177,16 +177,16 @@ export function DocumentsManager({
   return (
     <>
       <div className="flex flex-col gap-4">
-        <div className="flex flex-wrap gap-3">
-          <Button onClick={() => setUploadOpen(true)} variant="secondary">
+        <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+          <Button className="w-full sm:w-auto" onClick={() => setUploadOpen(true)} variant="secondary">
             <FolderPlus className="h-4 w-4" />
             Add more files
           </Button>
-          <Button disabled={renamingAll} onClick={handleRenameAll} variant="outline">
+          <Button className="w-full sm:w-auto" disabled={renamingAll} onClick={handleRenameAll} variant="outline">
             <Sparkles className="h-4 w-4" />
             AI Rename All
           </Button>
-          <Button onClick={handleSummary}>Prepare Summary</Button>
+          <Button className="w-full sm:w-auto" onClick={handleSummary}>Prepare Summary</Button>
         </div>
         <DocumentGrid
           documents={documents}
@@ -238,7 +238,7 @@ export function DocumentsManager({
               </div>
             </div>
             <div className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-[0_20px_45px_-35px_rgba(15,23,42,0.25)]">
-              <div className="mb-5 flex items-center justify-between border-b border-slate-200 pb-4">
+              <div className="mb-5 flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 pb-4">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-[0.28em] text-slate-500">
                     MediHelp document reader
@@ -301,7 +301,7 @@ export function DocumentsManager({
                   <p className="mb-1 text-xs uppercase tracking-[0.28em] text-slate-500">
                     MediHelp Document Reader
                   </p>
-                  <div className="flex items-center justify-between gap-4">
+                  <div className="flex flex-wrap items-center justify-between gap-3">
                     <h3 className="text-lg font-semibold text-slate-950">
                       {activeDocument.parsed_data.title}
                     </h3>

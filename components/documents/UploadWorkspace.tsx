@@ -145,9 +145,9 @@ export function UploadWorkspace({
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-col sm:flex-row gap-4 justify-center items-stretch max-w-2xl mx-auto">
+      <div className="mx-auto grid max-w-4xl gap-4 sm:grid-cols-2">
         <button
-          className="flex-1"
+          className="w-full"
           onClick={() => uploadInputRef.current?.click()}
           type="button"
         >
@@ -163,7 +163,7 @@ export function UploadWorkspace({
           </Card>
         </button>
         <button
-          className="flex-1"
+          className="w-full"
           onClick={openCameraPicker}
           type="button"
         >
@@ -218,8 +218,9 @@ export function UploadWorkspace({
           </Card>
         ))}
       </div>
-      <div className="flex justify-end">
+      <div className="flex justify-stretch sm:justify-end">
         <Button
+          className="w-full sm:w-auto"
           disabled={busy}
           onClick={() => {
             router.push("/documents");

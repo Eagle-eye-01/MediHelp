@@ -111,9 +111,8 @@ export function TrialsExplorer({
           </div>
         </div>
 
-        <div className="grid gap-3 lg:grid-cols-[1.3fr_0.6fr_0.8fr_auto]">
+        <div className="grid gap-3 xl:grid-cols-[1.3fr_0.6fr_0.8fr_auto]">
           <Input
-            className="min-w-[200px]"
             onChange={(event) => setCondition(event.target.value)}
             placeholder={copy.conditionPlaceholder}
             value={condition}
@@ -173,7 +172,7 @@ export function TrialsExplorer({
             </div>
           </div>
 
-          <Button className="min-w-[160px]" disabled={loading || !condition.trim()} onClick={handleSearch}>
+          <Button className="w-full xl:min-w-[160px]" disabled={loading || !condition.trim()} onClick={handleSearch}>
             <Search className="h-4 w-4" />
             {loading ? copy.findingTrials : copy.findTrials}
           </Button>

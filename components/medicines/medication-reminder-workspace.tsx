@@ -199,10 +199,10 @@ export function MedicationReminderWorkspace() {
               </p>
             </div>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
             <Badge className="bg-blue-50 text-blue-700">{reminders.length} medicines tracked</Badge>
             <Badge className="bg-amber-50 text-amber-700">{lowStockCount} low stock</Badge>
-            <Button onClick={handleEnableNotifications} variant={notificationsEnabled ? "secondary" : "outline"}>
+            <Button className="w-full sm:w-auto" onClick={handleEnableNotifications} variant={notificationsEnabled ? "secondary" : "outline"}>
               {notificationsEnabled ? "Notifications enabled" : "Enable browser notifications"}
             </Button>
           </div>
@@ -258,7 +258,7 @@ export function MedicationReminderWorkspace() {
                 ))}
               </div>
             </div>
-            <Button onClick={handleCreateReminder}>Save reminder</Button>
+            <Button className="w-full sm:w-auto" onClick={handleCreateReminder}>Save reminder</Button>
           </div>
         </Card>
 
@@ -338,7 +338,7 @@ export function MedicationReminderWorkspace() {
                         <span>No dose marked as taken yet.</span>
                       )}
                     </div>
-                    <Button onClick={() => handleTaken(reminder.id)}>Medication taken</Button>
+                    <Button className="w-full sm:w-auto" onClick={() => handleTaken(reminder.id)}>Medication taken</Button>
                   </div>
                 </div>
               ))

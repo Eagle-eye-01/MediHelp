@@ -66,6 +66,7 @@ export function PharmacyCard({
           {store.contact}
         </p>
         <Button
+          className="w-full"
           disabled={!medicine?.available}
           onClick={() => setCheckoutOpen(true)}
           variant="secondary"

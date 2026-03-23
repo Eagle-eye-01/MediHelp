@@ -20,7 +20,7 @@ export function InternalPageHeader({
   actions?: React.ReactNode;
 }) {
   return (
-    <section className="overflow-hidden rounded-[32px] border border-slate-200 bg-[linear-gradient(135deg,#FFFFFF_0%,#F8FAFC_48%,#EEF4FF_100%)] px-6 py-8 shadow-[0_24px_80px_-50px_rgba(15,23,42,0.28)] sm:px-8">
+    <section className="overflow-hidden rounded-[28px] border border-slate-200 bg-[linear-gradient(135deg,#FFFFFF_0%,#F8FAFC_48%,#EEF4FF_100%)] px-5 py-6 shadow-[0_24px_80px_-50px_rgba(15,23,42,0.28)] sm:rounded-[32px] sm:px-8 sm:py-8">
       <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
         <div className="max-w-3xl">
           <Link
@@ -34,7 +34,7 @@ export function InternalPageHeader({
           <h1 className="mt-3 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">{title}</h1>
           <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">{description}</p>
         </div>
-        {actions ? <div className="lg:max-w-md">{actions}</div> : null}
+        {actions ? <div className="w-full lg:max-w-md">{actions}</div> : null}
       </div>
     </section>
   );
