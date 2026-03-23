@@ -1,10 +1,12 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { LocateFixed } from "lucide-react";
 import { toast } from "sonner";
 
 import { MedicineSearch } from "@/components/medicines/MedicineSearch";
 import { PharmacyCard } from "@/components/medicines/PharmacyCard";
+import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { useGeolocation } from "@/lib/hooks/useGeolocation";
 import { calculateDistanceKm, fileToBase64, formatCoordinates } from "@/lib/utils";
@@ -28,7 +30,13 @@ export function MedicineStoreExplorer({
 }) {
   const [query, setQuery] = useState("");
   const [ocrMedicines, setOcrMedicines] = useState<string[]>([]);
-  const { coords, loading: locationLoading, error: locationError } = useGeolocation({ immediate: true });
+  const {
+    coords,
+    loading: locationLoading,
+    error: locationError,
+    supported: locationSupported,
+    requestLocation
+  } = useGeolocation();
 
   const effectiveQuery = query || ocrMedicines[0] || "";
 
@@ -112,9 +120,34 @@ export function MedicineStoreExplorer({
           {coords
             ? `Using your live location (${formatCoordinates(coords.latitude, coords.longitude)}) to show pharmacies within ${NEARBY_MEDICINE_RADIUS_KM} km of you.`
             : locationLoading
-              ? "Detecting your live location to find nearby pharmacies."
-              : locationError || "Location permission not available. Showing the strongest default pharmacy matches only."}
+              ? "Checking your live location to refine nearby pharmacy results."
+              : locationError || "Showing nearby pharmacy matches from the current city data. Live location is optional and only improves accuracy."}
         </p>
+        {locationSupported ? (
+          <div className="mt-3 flex flex-wrap items-center gap-3">
+            <Button
+              className="h-10"
+              disabled={locationLoading}
+              onClick={requestLocation}
+              type="button"
+              variant="outline"
+            >
+              <LocateFixed className="h-4 w-4" />
+              {coords
+                ? "Refresh live location"
+                : locationLoading
+                  ? "Locating..."
+                  : locationError
+                    ? "Try live location again"
+                    : "Use my location"}
+            </Button>
+            {!coords ? (
+              <p className="text-xs text-slate-500">
+                If Android blocks the permission prompt, close any floating bubbles and try again.
+              </p>
+            ) : null}
+          </div>
+        ) : null}
       </div>
       <MedicineSearch onChange={setQuery} onUpload={handleUpload} value={query} />
       {ocrMedicines.length ? (
