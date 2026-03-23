@@ -54,14 +54,14 @@ export function TrialCard({
   const copy = cardCopy[language as keyof typeof cardCopy] || cardCopy.English;
 
   return (
-    <Card className="flex h-full flex-col rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm transition-all hover:-translate-y-1 hover:shadow-md active:scale-95">
+    <Card className="flex min-w-0 h-full flex-col rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm transition-all hover:-translate-y-1 hover:shadow-md active:scale-95">
       <div className="flex items-start justify-between gap-3">
-        <div>
+        <div className="min-w-0">
           <div className="inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700">
             <ShieldCheck className="h-3.5 w-3.5" />
             {copy.indiaBased}
           </div>
-          <h3 className="mt-3 text-lg font-semibold leading-8 text-slate-950">{trial.trialName}</h3>
+          <h3 className="mt-3 break-words text-lg font-semibold leading-8 text-slate-950">{trial.trialName}</h3>
         </div>
         <div className="rounded-2xl bg-slate-50 px-3 py-2 text-center">
           <p className="text-lg font-semibold text-slate-950">{trial.matchScore}%</p>

@@ -105,7 +105,7 @@ export function MedicineStoreExplorer({
   }
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="min-w-0 overflow-x-hidden flex flex-col gap-6">
       <div className="rounded-2xl border border-emerald-100 bg-white px-5 py-4">
         <p className="text-sm font-semibold text-slate-950">Live recommendation status</p>
         <p className="mt-2 text-sm text-slate-600">
@@ -118,10 +118,10 @@ export function MedicineStoreExplorer({
       </div>
       <MedicineSearch onChange={setQuery} onUpload={handleUpload} value={query} />
       {ocrMedicines.length ? (
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2 overflow-hidden">
           {ocrMedicines.map((medicine) => (
             <button
-              className="rounded-full bg-blue-50 px-3 py-2 text-sm font-medium text-primary active:scale-95"
+              className="max-w-full truncate rounded-full bg-blue-50 px-3 py-2 text-sm font-medium text-primary active:scale-95"
               key={medicine}
               onClick={() => setQuery(medicine)}
             >
