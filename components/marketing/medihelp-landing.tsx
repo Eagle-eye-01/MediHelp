@@ -744,7 +744,7 @@ function AIInsightsPreview() {
 }
 
 function MapPreview() {
-  const { coords, loading, error } = useGeolocation({ immediate: true, maximumAge: 60000 });
+  const { coords, loading, error } = useGeolocation({ maximumAge: 60000 });
   const rankedLocations = hospitalCards
     .map((item) => ({
       ...item,
@@ -771,7 +771,7 @@ function MapPreview() {
   const liveLocationLabel = coords
     ? nearestDistrict?.label || "Nearby Chennai region"
     : loading
-      ? "Locating your device..."
+      ? "Checking your device location..."
       : error || "Enable location to personalize nearby care";
 
   return (

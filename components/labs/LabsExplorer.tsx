@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { LocateFixed } from "lucide-react";
 
 import { FilterPanel } from "@/components/hospital/FilterPanel";
 import { LocationMap } from "@/components/hospital/LocationMap";
+import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Label } from "@/components/ui/label";
 import { LabCard } from "@/components/labs/LabCard";
@@ -22,7 +24,13 @@ export function LabsExplorer({
 }) {
   const [typeFilter, setTypeFilter] = useState("");
   const [selectedLabId, setSelectedLabId] = useState(labs[0]?.id || "");
-  const { coords, loading: locationLoading, error: locationError } = useGeolocation({ immediate: true });
+  const {
+    coords,
+    loading: locationLoading,
+    error: locationError,
+    supported: locationSupported,
+    requestLocation
+  } = useGeolocation();
 
   const filteredLabs = useMemo(() => {
     const rankedLabs = labs
@@ -89,9 +97,34 @@ export function LabsExplorer({
             {coords
             ? `Using your live location (${formatCoordinates(coords.latitude, coords.longitude)}) to show labs within ${NEARBY_LAB_RADIUS_KM} km of you.`
             : locationLoading
-              ? "Detecting your live location to find nearby labs."
-              : locationError || "Location permission not available. Showing the strongest default lab matches only."}
+              ? "Checking your live location to refine nearby lab results."
+              : locationError || "Showing nearby lab matches from the current city data. Live location is optional and only improves accuracy."}
           </p>
+          {locationSupported ? (
+            <div className="mt-3 flex flex-wrap items-center gap-3">
+              <Button
+                className="h-10"
+                disabled={locationLoading}
+                onClick={requestLocation}
+                type="button"
+                variant="outline"
+              >
+                <LocateFixed className="h-4 w-4" />
+                {coords
+                  ? "Refresh live location"
+                  : locationLoading
+                    ? "Locating..."
+                    : locationError
+                      ? "Try live location again"
+                      : "Use my location"}
+              </Button>
+              {!coords ? (
+                <p className="text-xs text-slate-500">
+                  If Android blocks the permission prompt, close any floating bubbles and try again.
+                </p>
+              ) : null}
+            </div>
+          ) : null}
         </div>
       <div className="flex h-full flex-col gap-4 xl:flex-row">
         <div className="w-full flex-shrink-0 xl:w-64">

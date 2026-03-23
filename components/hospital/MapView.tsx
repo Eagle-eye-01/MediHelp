@@ -4,8 +4,6 @@ import L from "leaflet";
 import { useEffect } from "react";
 import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
 
-import { useGeolocation } from "@/hooks/use-geolocation";
-
 type UserLocation = {
   latitude: number;
   longitude: number;
@@ -43,21 +41,25 @@ export default function MapView({
   }>;
   userLocation?: UserLocation | null;
 }) {
-  const { location } = useGeolocation();
-  const activeLocation = userLocation || location;
-  const center = activeLocation
-    ? [activeLocation.latitude, activeLocation.longitude]
+  const fallbackCenter: [number, number] = points.length
+    ? [
+        points.reduce((sum, point) => sum + point.lat, 0) / points.length,
+        points.reduce((sum, point) => sum + point.lng, 0) / points.length
+      ]
     : [12.9716, 77.5946];
+  const center: [number, number] = userLocation
+    ? [userLocation.latitude, userLocation.longitude]
+    : fallbackCenter;
 
   return (
     <MapContainer center={center as [number, number]} scrollWheelZoom={false} zoom={11}>
-      <RecenterMap center={center as [number, number]} />
+      <FitMapToContent points={points} userLocation={userLocation} />
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      {activeLocation ? (
-        <Marker icon={userMarkerIcon} position={[activeLocation.latitude, activeLocation.longitude]}>
+      {userLocation ? (
+        <Marker icon={userMarkerIcon} position={[userLocation.latitude, userLocation.longitude]}>
           <Popup>Your current location</Popup>
         </Marker>
       ) : null}
@@ -70,16 +72,41 @@ export default function MapView({
   );
 }
 
-function RecenterMap({
-  center
+function FitMapToContent({
+  points,
+  userLocation
 }: {
-  center: [number, number];
+  points: Array<{
+    id: string;
+    label: string;
+    lat: number;
+    lng: number;
+  }>;
+  userLocation?: UserLocation | null;
 }) {
   const map = useMap();
 
   useEffect(() => {
-    map.setView(center);
-  }, [center, map]);
+    const targets = [
+      ...points.map((point) => [point.lat, point.lng] as [number, number]),
+      ...(userLocation ? ([[userLocation.latitude, userLocation.longitude]] as [number, number][]) : [])
+    ];
+
+    if (!targets.length) {
+      map.setView([12.9716, 77.5946], 11);
+      return;
+    }
+
+    if (targets.length === 1) {
+      map.setView(targets[0], userLocation ? 12 : 11);
+      return;
+    }
+
+    map.fitBounds(L.latLngBounds(targets), {
+      animate: false,
+      padding: [24, 24]
+    });
+  }, [map, points, userLocation]);
 
   return null;
 }
