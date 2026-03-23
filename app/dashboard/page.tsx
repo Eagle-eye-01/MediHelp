@@ -1,10 +1,5 @@
-import Link from "next/link";
-import { ChevronLeft } from "lucide-react";
-
 import { DashboardOverview } from "@/components/dashboard/dashboard-overview";
-import { buttonVariants } from "@/components/ui/button";
 import { getCurrentUserProfile, getHospitals, getUserDocuments } from "@/lib/data";
-import { cn } from "@/lib/utils";
 
 function buildTrendData(uploadDates: string[]) {
   const now = new Date();
@@ -40,11 +35,6 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-8 pb-10">
-      <Link className={cn(buttonVariants({ variant: "outline" }), "inline-flex")} href="/">
-        <ChevronLeft className="mr-2 h-4 w-4" />
-        Back to Home
-      </Link>
-
       <DashboardOverview
         conditionsTracked={conditionsTracked}
         documentsCount={documents.length}
