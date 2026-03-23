@@ -37,22 +37,23 @@ Make sure you have [Node.js](https://nodejs.org/) (v18 or higher) installed on y
    cd medihelp
    ```
 2. Install the dependencies:
-  ```bash
-  npm install
-  # or
-  yarn install
-  # or
-  pnpm install
-  ```
+   ```bash
+   npm install
+   # or
+   yarn install
+   # or
+   pnpm install
+   ```
 3. Set up your environment variables. Create a `.env.local` file in the root directory and add the following keys (refer to `.env.local.example` if available):  
-  ```bash
-  # Supabase
-  NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
-  NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+   ```bash
+   # Supabase
+   NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
   
-  # Google Gemini AI
-  GEMINI_API_KEY=your_google_gemini_api_key
-  ```
+   # Google Gemini AI
+   GEMINI_API_KEY=your_google_gemini_api_key
+   ```
+
 ### Running the Development Server
 Start the application in development mode:
 
