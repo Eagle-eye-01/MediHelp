@@ -102,14 +102,14 @@ export function TrialCard({
         </div>
       ) : null}
 
-      <div className="mt-auto flex flex-wrap gap-3 pt-5">
-        <Button onClick={() => setExpanded((value) => !value)} variant="outline">
+      <div className="mt-auto flex flex-col gap-3 pt-5 sm:flex-row sm:flex-wrap">
+        <Button className="w-full sm:w-auto" onClick={() => setExpanded((value) => !value)} variant="outline">
           {expanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
           {expanded ? copy.hideDetails : copy.viewFullTrial}
         </Button>
         {trial.trialUrl ? (
           <Link
-            className={cn(buttonVariants({ variant: "secondary" }), "inline-flex")}
+            className={cn(buttonVariants({ variant: "secondary" }), "inline-flex w-full justify-center sm:w-auto")}
             href={trial.trialUrl}
             rel="noreferrer"
             target="_blank"

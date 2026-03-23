@@ -117,8 +117,8 @@ export function DashboardOverview({
     <>
       <div className="space-y-8 pb-10">
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-          <div>
-            <h2 className="text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
+          <div className="min-w-0">
+            <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
               Good morning, {name}
             </h2>
             <div className="mt-3">
@@ -133,13 +133,13 @@ export function DashboardOverview({
               })}
             </p>
           </div>
-          <Button className="shadow-[0_16px_40px_-24px_rgba(37,99,235,0.8)]" onClick={handlePrepareSummary}>
+          <Button className="w-full shadow-[0_16px_40px_-24px_rgba(37,99,235,0.8)] md:w-auto" onClick={handlePrepareSummary}>
             <Sparkles className="h-4 w-4" />
             Prepare AI Summary
           </Button>
         </div>
 
-        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-5">
+        <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-5">
           {statCards.map((stat) => (
             <Card className="rounded-[28px] border border-slate-200 bg-white shadow-sm" key={stat.label}>
               <CardContent className="p-6">
@@ -194,8 +194,8 @@ export function DashboardOverview({
                   <p className="text-sm text-slate-500">Your activity over the last 6 months</p>
                 </div>
               </div>
-              <div className="mt-8">
-                <div className="flex h-64 items-end gap-4 rounded-[28px] bg-[linear-gradient(180deg,#F8FAFC_0%,#EEF4FF_100%)] p-6">
+              <div className="mt-8 overflow-x-auto">
+                <div className="flex h-64 min-w-[520px] items-end gap-3 rounded-[28px] bg-[linear-gradient(180deg,#F8FAFC_0%,#EEF4FF_100%)] p-4 sm:gap-4 sm:p-6">
                   {trendData.map((point) => (
                     <div className="flex flex-1 flex-col items-center gap-3" key={point.label}>
                       <div className="flex w-full items-end justify-center">
@@ -222,7 +222,7 @@ export function DashboardOverview({
 
         <div>
           <p className="text-sm font-semibold uppercase tracking-[0.24em] text-slate-500">Quick actions</p>
-          <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             {[
               { href: "/hospital", label: "Find Hospital", icon: Stethoscope, tone: "bg-blue-50 text-blue-700" },
               { href: "/labs", label: "Book Lab Test", icon: TestTube2, tone: "bg-emerald-50 text-emerald-700" },

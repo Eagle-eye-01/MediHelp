@@ -129,13 +129,13 @@ export function DocumentCard({
           </p>
         </div>
       </div>
-      <div className="flex flex-wrap gap-2">
-        <Button className="flex-1" disabled={saving} onClick={handleSave} variant="secondary">
+      <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+        <Button className="w-full sm:flex-1" disabled={saving} onClick={handleSave} variant="secondary">
           <Save className="h-4 w-4" />
           Save name
         </Button>
         <Button
-          className="flex-1"
+          className="w-full sm:flex-1"
           onClick={() => onCompress(document, !document.is_compressed)}
           variant="outline"
         >
