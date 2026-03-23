@@ -96,5 +96,5 @@ The application will be available at [http://localhost:3000](http://localhost:30
 - **Multilingual Support**: Integrated Groq API and Gemini to generate plain-language clinical trial explanations in English, Tamil, Hindi, and Telugu.
 - **Business Strategy**: Evaluated and defined business models, value propositions, and monetization strategies for the MediHelp healthtech ecosystem.
 
-- Thank you for reading!
+- Thank you for reading!!!
 
