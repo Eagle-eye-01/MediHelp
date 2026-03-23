@@ -4,9 +4,9 @@ import Link from "next/link";
 import { Lock } from "lucide-react";
 import { useEffect, useState } from "react";
 
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { getMockPlan, type Plan, planMeetsRequirement } from "@/lib/mock-plan";
+import { getMockPlan, planMeetsRequirement, subscribeToMockPlan, type Plan } from "@/lib/mock-plan";
 import { cn } from "@/lib/utils";
 
 export function PlanUpgradeNudge({
@@ -26,7 +26,7 @@ export function PlanUpgradeNudge({
         }
       : {
           title: "This feature is available on Premium",
-          cta: "Upgrade - ₹199/mo"
+          cta: "Upgrade - Rs. 199/mo"
         };
 
   return (
@@ -74,6 +74,7 @@ export function PlanGate({
 
   useEffect(() => {
     setPlan(getMockPlan());
+    return subscribeToMockPlan(setPlan);
   }, []);
 
   if (!planMeetsRequirement(plan, requiredPlan)) {

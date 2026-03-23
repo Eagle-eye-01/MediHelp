@@ -22,6 +22,7 @@ export function PharmaPartnerModal({
 
   function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
+    // TODO: POST to CRM or send email via Resend/Postmark
     toast.success("Thanks! We'll be in touch within 2 business days.");
     onClose();
   }

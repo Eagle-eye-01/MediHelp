@@ -11,10 +11,14 @@ import { formatCurrency } from "@/lib/utils";
 
 export function PharmacyCard({
   store,
-  medicineName
+  medicineName,
+  distanceKm,
+  recommended = false
 }: {
   store: MedicineStore;
   medicineName?: string;
+  distanceKm?: number | null;
+  recommended?: boolean;
 }) {
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const medicine = store.medicines.find((item) =>
@@ -28,11 +32,21 @@ export function PharmacyCard({
           <div>
             <h3 className="text-base font-semibold text-slate-900">{store.name}</h3>
             <p className="text-sm text-slate-500">{store.location}</p>
+            {recommended ? (
+              <p className="mt-2 text-sm font-medium text-emerald-700">Recommended from your live location</p>
+            ) : null}
           </div>
-          <span className="flex items-center gap-1 rounded-full bg-amber-50 px-3 py-1 text-xs font-medium text-amber-700">
-            <Star className="h-3 w-3 fill-current" />
-            {store.rating}
-          </span>
+          <div className="flex flex-col items-end gap-2">
+            <span className="flex items-center gap-1 rounded-full bg-amber-50 px-3 py-1 text-xs font-medium text-amber-700">
+              <Star className="h-3 w-3 fill-current" />
+              {store.rating}
+            </span>
+            {distanceKm != null ? (
+              <span className={`rounded-full px-3 py-1 text-xs font-medium ${recommended ? "bg-emerald-50 text-emerald-700" : "bg-slate-100 text-slate-600"}`}>
+                {distanceKm.toFixed(1)} km
+              </span>
+            ) : null}
+          </div>
         </div>
         <div className="rounded-xl bg-slate-50 p-3 text-sm text-slate-600">
           {medicine ? (

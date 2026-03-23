@@ -21,7 +21,7 @@ import { ResponsiveModal } from "@/components/ui/responsive-modal";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useCountUp } from "@/lib/hooks/useCountUp";
-import { getMockPlan, PLAN_LIMITS, type Plan } from "@/lib/mock-plan";
+import { getMockPlan, PLAN_LIMITS, subscribeToMockPlan, type Plan } from "@/lib/mock-plan";
 import { formatDate } from "@/lib/utils";
 
 export function DashboardOverview({
@@ -50,6 +50,7 @@ export function DashboardOverview({
     if (typeof window !== "undefined") {
       setPlan(getMockPlan());
     }
+    return subscribeToMockPlan(setPlan);
   }, []);
 
   const docsCount = useCountUp(documentsCount);
@@ -174,6 +175,9 @@ export function DashboardOverview({
                   <p className="mt-2 text-xs text-slate-500">Free tier document usage</p>
                 </div>
               ) : null}
+              <Link className="mt-4 inline-flex text-sm font-semibold text-blue-600 hover:text-blue-700" href="/pricing">
+                View plans
+              </Link>
             </CardContent>
           </Card>
         </div>

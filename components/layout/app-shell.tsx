@@ -8,6 +8,7 @@ import { toast } from "sonner";
 
 import { BillingStatusModal } from "@/components/BillingStatusModal";
 import { Button } from "@/components/ui/button";
+import { getMedicationReminders, subscribeToMedicationReminders } from "@/lib/medication-reminders";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import { useIsMobile } from "@/lib/hooks/useIsMobile";
 import { getInitials } from "@/lib/utils";
@@ -56,7 +57,27 @@ export function AppShell({
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [billingOpen, setBillingOpen] = useState(false);
+  const [medicationNotifications, setMedicationNotifications] = useState<
+    Array<{ id: string; title: string; body: string }>
+  >([]);
   const initials = getInitials(name || email);
+
+  useEffect(() => {
+    const toItems = () =>
+      getMedicationReminders()
+        .filter((item) => item.enabled)
+        .slice(0, 3)
+        .map((item) => ({
+          id: `med-${item.id}`,
+          title: `Medication reminder: ${item.name}`,
+          body: `${item.dosage}. ${item.inventoryCount} doses left.`
+        }));
+
+    setMedicationNotifications(toItems());
+    return subscribeToMedicationReminders(() => setMedicationNotifications(toItems()));
+  }, []);
+
+  const allNotifications = [...medicationNotifications, ...notifications];
 
   useEffect(() => {
     if (isMobile) {
@@ -155,7 +176,7 @@ export function AppShell({
                 </button>
               ) : null}
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-blue-600">Care workspace</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-blue-600">Carespace</p>
                 <h1 className="text-lg font-semibold capitalize tracking-tight text-slate-950 sm:text-xl">
                   {pathname === "/" ? "Home" : pathname.replace("/", "").replace("-", " ")}
                 </h1>
@@ -193,7 +214,7 @@ export function AppShell({
                       </button>
                     </div>
                     <div className="mt-2 space-y-2">
-                      {notifications.map((item) => (
+                      {allNotifications.map((item) => (
                         <button
                           className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-left hover:border-blue-200 hover:bg-blue-50 active:scale-[0.99]"
                           key={item.id}

@@ -33,7 +33,7 @@ const plans = [
     price: "Rs. 199/month",
     subtitle: "Best for engaged patients",
     features: [
-      "Unlimited document uploads",
+      "Unlimited document uploads + AI parsing",
       "Full AI clinical trial matching",
       "Medication reminders & refill alerts",
       "Priority hospital & lab listings"
@@ -82,15 +82,21 @@ export default function PricingPage() {
   }, [plan]);
 
   function handleSetPlan(nextPlan: Plan) {
-    // TODO: Replace with Stripe/Razorpay integration
+    // TODO: Replace setMockPlan with Razorpay payment initiation
     setMockPlan(nextPlan);
     setPlanState(nextPlan);
+    if (nextPlan === "premium") {
+      toast.success("You're now on Premium! (Demo mode)");
+      return;
+    }
+
     toast.success(`${nextPlan.charAt(0).toUpperCase() + nextPlan.slice(1)} demo plan active.`);
   }
 
   function handleEnterpriseSubmit(event: React.FormEvent) {
     event.preventDefault();
-    toast.success("Thanks! Our sales team will reach out shortly.");
+    // TODO: Wire to CRM / email on form submit
+    toast.success("Thanks! We'll be in touch within 2 business days.");
     setContactOpen(false);
   }
 
@@ -219,7 +225,7 @@ export default function PricingPage() {
                         ? "Current plan"
                         : item.key === "free"
                           ? "Switch to Free"
-                          : "Switch to Premium"}
+                          : "Upgrade to Premium"}
                     </Button>
                   )}
                   {item.key === "premium" ? (

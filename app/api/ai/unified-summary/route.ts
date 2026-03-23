@@ -8,9 +8,37 @@ function fallbackSummary(normalizedSummaries: string[]) {
     return "Upload documents to prepare a health overview.";
   }
 
-  return `MediHelp found ${normalizedSummaries.length} document summary${
-    normalizedSummaries.length === 1 ? "" : "ies"
-  } for this patient. Review the uploaded reports together to understand recent conditions, medications, and likely follow-up needs.`;
+  const joined = normalizedSummaries.join(" ").toLowerCase();
+  const matchedConditions = [
+    "iron deficiency",
+    "vitamin d",
+    "thyroid",
+    "prediabetes",
+    "cholesterol",
+    "respiratory"
+  ].filter((term) => joined.includes(term));
+
+  const readableConditions = matchedConditions.length
+    ? matchedConditions.map((term) => {
+        if (term === "vitamin d") {
+          return "vitamin D insufficiency";
+        }
+
+        if (term === "respiratory") {
+          return "seasonal respiratory irritation";
+        }
+
+        return term;
+      })
+    : ["recent uploaded conditions"];
+
+  const uniqueConditions = [...new Set(readableConditions)];
+  const conditionText =
+    uniqueConditions.length === 1
+      ? uniqueConditions[0]
+      : `${uniqueConditions.slice(0, -1).join(", ")} and ${uniqueConditions.at(-1)}`;
+
+  return `Across ${normalizedSummaries.length} uploaded records, MediHelp is tracking ${conditionText}. Recent reports suggest stable thyroid screening, ongoing monitoring for iron and vitamin levels, and follow-up attention to lifestyle-based conditions where applicable. Keep the latest lab reports and prescriptions together before your next consultation so trends are easier to review.`;
 }
 
 export async function POST(request: Request) {

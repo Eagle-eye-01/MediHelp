@@ -7,9 +7,11 @@ MediHelp is a comprehensive healthcare platform built to connect patients with e
 - **Framework**: [Next.js 14](https://nextjs.org/)
 - **UI & Styling**: [React](https://reactjs.org/), [Tailwind CSS](https://tailwindcss.com/)
 - **Database & Authentication**: [Supabase](https://supabase.com/)
-- **AI Integration**: [Google Generative AI SDK (Gemini)](https://ai.google.dev/)
+- **AI Integration**: [Google Generative AI SDK (Gemini)](https://ai.google.dev/), [Groq API](https://groq.com/)
+- **Vector Database**: [ChromaDB](https://www.trychroma.com/) (Local CPU-based embeddings)
 - **Maps & Visualization**: [Leaflet](https://leafletjs.com/), [Recharts](https://recharts.org/)
 - **Components & Utils**: `canvas-confetti`, `sonner`, `lucide-react`, `clsx`, `tailwind-merge`
+- **Data Pipeline**: `ingest.py` (Python script for RAG data processing and storage)
 
 ---
 
@@ -23,7 +25,7 @@ MediHelp is a comprehensive healthcare platform built to connect patients with e
 | **🏥 Hospital Finder** | Integrated Map (Leaflet) to locate nearby hospitals, clinics, and specialized medical centers based on the user's location. | ✅ |
 | **🔬 Labs & Diagnostics** | Search directory for nearby diagnostic centers to book blood tests, scans, and other pathological evaluations. | ✅ |
 | **💊 Medicines Tracking** | Digital pharmacy bridge connecting users to essential medicines, tracking prescriptions and ongoing pill regimens. | ✅ |
-| **🧬 Clinical Trial Finder** | AI/RAG-powered matching system that scans user medical data to suggest highly relevant clinical trials in their area, explaining complex trial requirements in simple terms. | ✅ |
+| **🧬 Clinical Trial Finder** | RAG-powered matching system recommending clinical trials based on patient data, with plain-language explanations in English, Tamil, Hindi, and Telugu. Backed by local ChromaDB embeddings. | ✅ |
 | **🧑‍⚕️ User Profile** | Comprehensive patient profile containing demographic data, medical history, allergies, and contact details to improve AI matching accuracy. | ✅ |
 
 ---
@@ -82,4 +84,15 @@ The application will be available at [http://localhost:3000](http://localhost:30
 - `components/` - Reusable React components and UI elements.
 - `lib/` - Utility functions, Supabase clients, and generic hooks.
 - `public/` - Static assets and images.
-- `scripts/` - Database seeding and utility scripts.
+- `scripts/` - Database seeding and utility scripts (including `ingest.py` for ChromaDB).
+
+---
+
+## 🚀 What We've Built So Far
+
+- **Completed Frontend Pages**: Fully functional, responsive UI for `/auth/login`, `/auth/register`, `/dashboard`, `/upload`, `/documents`, `/hospital`, `/labs`, `/medicines`, `/clinical-trial`, and `/profile`.
+- **Backend & Database**: Configured Supabase for Auth & Storage, established REST API connectivity, and tested queries via Postman.
+- **AI & RAG Pipeline**: Built a robust Python ingest script (`ingest.py`) to fetch, chunk, and embed clinical trial data into a local ChromaDB instance.
+- **Multilingual Support**: Integrated Groq API and Gemini to generate plain-language clinical trial explanations in English, Tamil, Hindi, and Telugu.
+- **Business Strategy**: Evaluated and defined business models, value propositions, and monetization strategies for the MediHelp healthtech ecosystem.
+

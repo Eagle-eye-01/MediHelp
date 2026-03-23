@@ -7,11 +7,15 @@ import type { HospitalWithDoctors } from "@/types";
 export function HospitalCard({
   hospital,
   active,
-  onClick
+  onClick,
+  distanceKm,
+  recommended = false
 }: {
   hospital: HospitalWithDoctors;
   active: boolean;
   onClick: () => void;
+  distanceKm?: number | null;
+  recommended?: boolean;
 }) {
   return (
     <Card
@@ -28,9 +32,19 @@ export function HospitalCard({
             {hospital.location}
           </p>
         </div>
-        <Badge>{hospital.specializations[0]}</Badge>
+        <div className="flex flex-col items-end gap-2">
+          <Badge>{hospital.specializations[0]}</Badge>
+          {distanceKm != null ? (
+            <Badge className={recommended ? "bg-blue-50 text-blue-700" : "bg-slate-100 text-slate-600"}>
+              {distanceKm.toFixed(1)} km
+            </Badge>
+          ) : null}
+        </div>
       </div>
       <div className="grid gap-2 text-sm text-slate-600">
+        {recommended ? (
+          <p className="font-medium text-blue-700">Recommended from your live location</p>
+        ) : null}
         <p className="flex items-center gap-2">
           <Phone className="h-4 w-4 text-primary" />
           {hospital.contact}

@@ -1,13 +1,31 @@
 "use client";
 
 import { X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { PharmaPartnerModal } from "@/components/PharmaPartnerModal";
+
+const DISMISS_KEY = "medihelp_partner_program_dismissed";
 
 export function PartnerProgramBanner() {
   const [dismissed, setDismissed] = useState(false);
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    setDismissed(window.localStorage.getItem(DISMISS_KEY) === "true");
+  }, []);
+
+  function handleDismiss() {
+    setDismissed(true);
+
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem(DISMISS_KEY, "true");
+    }
+  }
 
   if (dismissed) {
     return null;
@@ -32,7 +50,7 @@ export function PartnerProgramBanner() {
           </div>
           <button
             className="rounded-full p-1 text-slate-400 hover:bg-white hover:text-slate-600"
-            onClick={() => setDismissed(true)}
+            onClick={handleDismiss}
             type="button"
           >
             <X className="h-4 w-4" />

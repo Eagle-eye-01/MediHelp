@@ -20,6 +20,25 @@ export interface MedicalDocument {
   patient_name: string;
   upload_date: string;
   is_compressed: boolean;
+  parsed_data?: ParsedDocument | null;
+}
+
+export interface ParsedDocumentSection {
+  heading: string;
+  content: string;
+}
+
+export interface ParsedDocument {
+  title: string;
+  subtitle: string | null;
+  documentType: "LAB_REPORT" | "PRESCRIPTION" | "CLINICAL_NOTE" | "SCAN" | "OTHER";
+  date: string | null;
+  patientName: string | null;
+  tags: string[];
+  keyInsights: string[];
+  sections: ParsedDocumentSection[];
+  disease: string | null;
+  patient: string | null;
 }
 
 export interface Hospital {
@@ -95,6 +114,10 @@ export interface MedicineStore {
   location: string;
   contact: string;
   rating: number;
+  coordinates?: {
+    lat: number;
+    lng: number;
+  };
   medicines: MedicineAvailability[];
 }
 

@@ -16,13 +16,23 @@ async function analyzeDocument(base64: string, mimeType: string) {
     };
   }
 
-  const rawText = await callGemini(
-    'You are a medical document analyzer. Extract from this document:\n   1. Patient name\n   2. Disease or condition name\n   3. A 2-3 sentence plain-language summary\n   4. A suggested filename in format: PatientName_DiseaseName_YYYY-MM-DD\n   Respond in JSON only, no markdown: { patientName, diseaseName, summary, suggestedFilename }',
-    base64,
-    mimeType
-  );
+  try {
+    const rawText = await callGemini(
+      'You are a medical document analyzer. Extract from this document:\n   1. Patient name\n   2. Disease or condition name\n   3. A 2-3 sentence plain-language summary\n   4. A suggested filename in format: PatientName_DiseaseName_YYYY-MM-DD\n   Respond in JSON only, no markdown: { patientName, diseaseName, summary, suggestedFilename }',
+      base64,
+      mimeType
+    );
 
-  return JSON.parse(cleanJsonResponse(rawText));
+    return JSON.parse(cleanJsonResponse(rawText));
+  } catch {
+    return {
+      patientName: "Patient",
+      diseaseName: mimeType.includes("pdf") ? "Uploaded Report" : "Scanned Medical Record",
+      summary:
+        "Medical document uploaded successfully. AI extraction is temporarily unavailable, so MediHelp saved the file with a fallback summary.",
+      suggestedFilename: `Patient_MedicalRecord_${new Date().toISOString().slice(0, 10)}`
+    };
+  }
 }
 
 export async function POST(request: Request) {

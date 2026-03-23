@@ -7,5 +7,5 @@ export function isSupabaseConfigured() {
 }
 
 export function isGeminiConfigured() {
-  return Boolean(process.env.GEMINI_API_KEY);
+  return Boolean(process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY);
 }

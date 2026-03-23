@@ -2,8 +2,8 @@ import { MapPin, Pill, Sparkles } from "lucide-react";
 
 import { AppShell } from "@/components/layout/app-shell";
 import { InternalPageHeader } from "@/components/layout/internal-page-header";
+import { MedicationReminderWorkspace } from "@/components/medicines/medication-reminder-workspace";
 import { MedicineStoreExplorer } from "@/components/medicines/MedicineStoreExplorer";
-import { ReminderToggleCard } from "@/components/medicines/reminder-toggle-card";
 import { Badge } from "@/components/ui/badge";
 import { getCurrentUserProfile, getMedicineStores } from "@/lib/data";
 
@@ -41,7 +41,7 @@ export default async function MedicinesPage() {
           eyebrow="Medicine search"
           title="Search prescriptions in one focused flow."
         />
-        <ReminderToggleCard />
+        <MedicationReminderWorkspace />
         <MedicineStoreExplorer stores={stores} />
       </div>
     </AppShell>

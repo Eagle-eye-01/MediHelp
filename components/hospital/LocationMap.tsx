@@ -6,7 +6,8 @@ const MapView = dynamic(() => import("@/components/hospital/MapView"), { ssr: fa
 
 export function LocationMap({
   points,
-  title
+  title,
+  userLocation
 }: {
   title: string;
   points: Array<{
@@ -15,6 +16,10 @@ export function LocationMap({
     lat: number;
     lng: number;
   }>;
+  userLocation?: {
+    latitude: number;
+    longitude: number;
+  } | null;
 }) {
   return (
     <div className="w-full overflow-hidden rounded-xl border border-slate-100 bg-white">
@@ -22,7 +27,7 @@ export function LocationMap({
         <h3 className="text-sm font-semibold text-slate-900">{title}</h3>
       </div>
       <div className="h-48 w-full sm:h-64 lg:h-80">
-        <MapView points={points} />
+        <MapView points={points} userLocation={userLocation} />
       </div>
     </div>
   );

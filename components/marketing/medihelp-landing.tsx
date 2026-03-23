@@ -29,9 +29,10 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { useIntersection } from "@/lib/hooks/useIntersection";
+import { useGeolocation } from "@/lib/hooks/useGeolocation";
 import { useIsMobile } from "@/lib/hooks/useIsMobile";
 import { useTypewriter } from "@/lib/hooks/useTypewriter";
-import { cn } from "@/lib/utils";
+import { calculateDistanceKm, cn, formatCoordinates, formatDistanceKm } from "@/lib/utils";
 
 import { Reveal } from "./reveal";
 import { RippleButton } from "./ripple-button";
@@ -93,23 +94,37 @@ const steps = [
 
 const hospitalCards = [
   {
+    id: "landing-1",
     name: "Apollo Specialty Care",
     rating: 4.8,
     location: "Teynampet, Chennai",
-    subtitle: "Cardiology, endocrinology, diagnostics"
+    subtitle: "Cardiology, endocrinology, diagnostics",
+    coordinates: { lat: 13.0418, lng: 80.2341 }
   },
   {
-    name: "Fortis Heart & Health",
+    id: "landing-2",
+    name: "SRM Medical College Hospital",
     rating: 4.7,
-    location: "Bannerghatta Road, Bengaluru",
-    subtitle: "Cardiac surgery, ICU beds, emergency care"
+    location: "Kattankulathur, Chengalpattu",
+    subtitle: "Emergency care, multispeciality consults, student medical access",
+    coordinates: { lat: 12.8232, lng: 80.0444 }
   },
   {
-    name: "Aster Prime Labs",
+    id: "landing-3",
+    name: "Chengalpattu Medical Centre",
     rating: 4.9,
-    location: "Madhapur, Hyderabad",
-    subtitle: "Full blood panels, MRI, home collection"
+    location: "Chengalpattu",
+    subtitle: "Trauma, diagnostics, same-day specialist referrals",
+    coordinates: { lat: 12.6916, lng: 79.9766 }
   }
+];
+
+const districtHints = [
+  { label: "Kattankulathur, Chengalpattu district", lat: 12.8232, lng: 80.0444 },
+  { label: "Tambaram, Chennai district", lat: 12.9249, lng: 80.1000 },
+  { label: "Guindy, Chennai district", lat: 13.0104, lng: 80.2205 },
+  { label: "Chengalpattu district", lat: 12.6819, lng: 79.9836 },
+  { label: "OMR corridor, Chennai district", lat: 12.8408, lng: 80.1532 }
 ];
 
 const testimonials = [
@@ -729,6 +744,36 @@ function AIInsightsPreview() {
 }
 
 function MapPreview() {
+  const { coords, loading, error } = useGeolocation({ immediate: true, maximumAge: 60000 });
+  const rankedLocations = hospitalCards
+    .map((item) => ({
+      ...item,
+      distanceKm: coords
+        ? calculateDistanceKm(coords.latitude, coords.longitude, item.coordinates.lat, item.coordinates.lng)
+        : null
+    }))
+    .sort((a, b) => {
+      if (a.distanceKm != null && b.distanceKm != null && a.distanceKm !== b.distanceKm) {
+        return a.distanceKm - b.distanceKm;
+      }
+
+      return b.rating - a.rating;
+    });
+  const closestMatch = rankedLocations[0];
+  const nearestDistrict = coords
+    ? districtHints
+        .map((item) => ({
+          ...item,
+          distanceKm: calculateDistanceKm(coords.latitude, coords.longitude, item.lat, item.lng)
+        }))
+        .sort((a, b) => a.distanceKm - b.distanceKm)[0]
+    : null;
+  const liveLocationLabel = coords
+    ? nearestDistrict?.label || "Nearby Chennai region"
+    : loading
+      ? "Locating your device..."
+      : error || "Enable location to personalize nearby care";
+
   return (
     <div className="relative mt-10 overflow-hidden rounded-[32px] border border-slate-200 bg-[linear-gradient(180deg,#EFF6FF_0%,#FFFFFF_100%)] p-4 shadow-[0_20px_70px_-35px_rgba(15,23,42,0.3)]">
       <div className="relative h-[360px] overflow-hidden rounded-[28px] border border-blue-100 bg-white">
@@ -739,7 +784,7 @@ function MapPreview() {
           <PinPulse pulseClassName="bg-blue-600" />
         </div>
         <div className="absolute left-[60%] top-[50%]">
-          <PinPulse pulseClassName="bg-emerald-500" />
+          <PinPulse pulseClassName="bg-red-500" />
         </div>
         <div className="absolute left-[74%] top-[22%]">
           <PinPulse pulseClassName="bg-indigo-500" />
@@ -750,22 +795,29 @@ function MapPreview() {
           <p className="mt-1 text-sm font-semibold text-slate-900">Nearby hospitals and labs</p>
         </div>
 
-        <div className="absolute bottom-5 left-5 right-5 grid gap-3 lg:grid-cols-[1fr_auto]">
-          <div className="rounded-[24px] border border-white/80 bg-white/92 p-4 shadow-lg backdrop-blur">
+        <div className="absolute bottom-5 left-5 right-5 grid gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(260px,0.9fr)]">
+          <div className="group rounded-[24px] border border-white/80 bg-white/92 p-4 shadow-lg backdrop-blur transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl">
             <div className="flex items-center justify-between gap-4">
               <div>
                 <p className="text-sm text-slate-500">Closest match</p>
-                <p className="text-lg font-semibold text-slate-950">Apollo Specialty Care</p>
+                <p className="text-lg font-semibold text-slate-950">{closestMatch.name}</p>
               </div>
-              <Badge className="bg-blue-50 text-blue-700">1.8 km away</Badge>
+              <Badge className="bg-blue-50 text-blue-700">
+                {closestMatch.distanceKm != null ? formatDistanceKm(closestMatch.distanceKm) : "Nearby care"}
+              </Badge>
             </div>
-            <p className="mt-3 text-sm text-slate-700">
-              Cardiology, diagnostics, and same-week follow-up slots available.
+            <p className="mt-3 line-clamp-2 text-sm text-slate-700 transition-all duration-300 group-hover:line-clamp-none">
+              {closestMatch.subtitle}
             </p>
           </div>
-          <div className="rounded-[24px] border border-white/80 bg-slate-950/90 px-4 py-4 text-white shadow-lg backdrop-blur">
+          <div className="group rounded-[24px] border border-white/80 bg-slate-950/90 px-4 py-4 text-white shadow-lg backdrop-blur transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl">
             <p className="text-xs uppercase tracking-[0.24em] text-slate-400">You are here</p>
-            <p className="mt-2 text-sm font-semibold">Koramangala, Bengaluru</p>
+            <p className="mt-2 text-sm font-semibold">{liveLocationLabel}</p>
+            <p className="mt-2 line-clamp-2 text-xs text-slate-400 transition-all duration-300 group-hover:line-clamp-none">
+              {coords
+                ? `${formatCoordinates(coords.latitude, coords.longitude)} · Live device location is powering nearby recommendations.`
+                : "Location remains optional."}
+            </p>
           </div>
         </div>
       </div>

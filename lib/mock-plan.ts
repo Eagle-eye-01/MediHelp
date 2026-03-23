@@ -1,4 +1,5 @@
-// Simulates billing state - replace with Stripe/Razorpay in production
+// Simulates billing state - replace with Razorpay/Stripe in production
+// TODO: Replace with real billing table in Supabase
 export type Plan = "free" | "premium" | "enterprise";
 
 export const MOCK_PLAN_KEY = "medihelp_mock_plan";

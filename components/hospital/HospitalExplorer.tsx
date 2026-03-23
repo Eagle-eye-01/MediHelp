@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
 import { MockPaymentSheet } from "@/components/MockPaymentSheet";
@@ -14,9 +14,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
 import { Textarea } from "@/components/ui/textarea";
+import { useGeolocation } from "@/lib/hooks/useGeolocation";
+import { calculateDistanceKm, formatCoordinates, formatDistanceKm } from "@/lib/utils";
 import type { Doctor, HospitalWithDoctors } from "@/types";
 
 const CONSULTATION_FEE = 799;
+const NEARBY_HOSPITAL_RADIUS_KM = 35;
+const MAX_NEARBY_HOSPITALS = 6;
 
 export function HospitalExplorer({
   hospitals,
@@ -32,25 +36,62 @@ export function HospitalExplorer({
   const [message, setMessage] = useState("");
   const [booking, setBooking] = useState(false);
   const [paymentOpen, setPaymentOpen] = useState(false);
+  const { coords, loading: locationLoading, error: locationError } = useGeolocation({ immediate: true });
 
   const filteredHospitals = useMemo(() => {
-    return hospitals.filter((hospital) => {
-      const matchCondition = condition
-        ? hospital.specializations.some((specialization) =>
-            specialization.toLowerCase().includes(condition.toLowerCase())
-          )
-        : true;
-      const matchSurgery = surgery
-        ? hospital.doctors.some((doctor) =>
-            doctor.specialization.toLowerCase().includes(surgery.toLowerCase())
-          )
-        : true;
-      return matchCondition && matchSurgery;
-    });
-  }, [condition, hospitals, surgery]);
+    const rankedHospitals = hospitals
+      .filter((hospital) => {
+        const matchCondition = condition
+          ? hospital.specializations.some((specialization) =>
+              specialization.toLowerCase().includes(condition.toLowerCase())
+            )
+          : true;
+        const matchSurgery = surgery
+          ? hospital.doctors.some((doctor) =>
+              doctor.specialization.toLowerCase().includes(surgery.toLowerCase())
+            )
+          : true;
+        return matchCondition && matchSurgery;
+      })
+      .map((hospital) => ({
+        ...hospital,
+        distanceKm: coords
+          ? calculateDistanceKm(
+              coords.latitude,
+              coords.longitude,
+              hospital.coordinates.lat,
+              hospital.coordinates.lng
+            )
+          : null
+      }))
+      .sort((a, b) => {
+        if (a.distanceKm != null && b.distanceKm != null && a.distanceKm !== b.distanceKm) {
+          return a.distanceKm - b.distanceKm;
+        }
+
+        return b.rating - a.rating;
+      });
+
+    if (!coords) {
+      return rankedHospitals.slice(0, MAX_NEARBY_HOSPITALS);
+    }
+
+    const nearbyHospitals = rankedHospitals.filter(
+      (hospital) =>
+        hospital.distanceKm != null && hospital.distanceKm <= NEARBY_HOSPITAL_RADIUS_KM
+    );
+
+    return nearbyHospitals.slice(0, MAX_NEARBY_HOSPITALS);
+  }, [condition, coords, hospitals, surgery]);
 
   const selectedHospital =
     filteredHospitals.find((hospital) => hospital.id === selectedHospitalId) || filteredHospitals[0];
+
+  useEffect(() => {
+    if (!filteredHospitals.some((hospital) => hospital.id === selectedHospitalId)) {
+      setSelectedHospitalId(filteredHospitals[0]?.id || "");
+    }
+  }, [filteredHospitals, selectedHospitalId]);
 
   function resetBookingFlow() {
     setSelectedDoctor(null);
@@ -98,8 +139,19 @@ export function HospitalExplorer({
             lat: hospital.coordinates.lat,
             lng: hospital.coordinates.lng
           }))}
-          title="Track location of user"
+          title="Nearby hospitals and your location"
+          userLocation={coords}
         />
+        <div className="rounded-2xl border border-blue-100 bg-white px-5 py-4">
+          <p className="text-sm font-semibold text-slate-950">Live recommendation status</p>
+          <p className="mt-2 text-sm text-slate-600">
+            {coords
+              ? `Using your live location (${formatCoordinates(coords.latitude, coords.longitude)}) to show hospitals within ${NEARBY_HOSPITAL_RADIUS_KM} km of you.`
+              : locationLoading
+                ? "Detecting your live location to find nearby hospitals."
+                : locationError || "Location permission not available. Showing the strongest default hospital matches only."}
+          </p>
+        </div>
         <div className="flex h-full flex-col gap-4 lg:flex-row">
           <div className="w-full flex-shrink-0 lg:w-64">
             <FilterPanel
@@ -127,18 +179,24 @@ export function HospitalExplorer({
           <div className="flex min-w-0 flex-1 flex-col gap-4 sm:flex-row">
             <div className="w-full space-y-4 overflow-y-auto sm:w-2/5 lg:w-1/3">
               {filteredHospitals.length ? (
-                filteredHospitals.map((hospital) => (
+                filteredHospitals.map((hospital, index) => (
                   <HospitalCard
                     active={selectedHospital?.id === hospital.id}
+                    distanceKm={hospital.distanceKm}
                     hospital={hospital}
                     key={hospital.id}
                     onClick={() => setSelectedHospitalId(hospital.id)}
+                    recommended={Boolean(coords) && index === 0}
                   />
                 ))
               ) : (
                 <EmptyState
-                  description="Try changing the condition or surgery filters to see more hospitals."
-                  title="No hospitals found"
+                  description={
+                    coords
+                      ? "No hospitals matched both your filters and nearby radius. Try another condition or widen the search by moving location settings."
+                      : "No hospitals matched the current filters. Try another condition or surgery focus."
+                  }
+                  title="No nearby hospitals found"
                 />
               )}
             </div>
@@ -146,8 +204,17 @@ export function HospitalExplorer({
               {selectedHospital ? (
                 <>
                   <div className="rounded-2xl border border-slate-100 bg-white p-5">
-                    <h2 className="text-lg font-semibold text-slate-900">{selectedHospital.name}</h2>
-                    <p className="mt-2 text-sm text-slate-500">{selectedHospital.location}</p>
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                      <div>
+                        <h2 className="text-lg font-semibold text-slate-900">{selectedHospital.name}</h2>
+                        <p className="mt-2 text-sm text-slate-500">{selectedHospital.location}</p>
+                      </div>
+                      {selectedHospital.distanceKm != null ? (
+                        <div className="rounded-full bg-blue-50 px-3 py-1 text-sm font-semibold text-blue-700">
+                          {formatDistanceKm(selectedHospital.distanceKm)}
+                        </div>
+                      ) : null}
+                    </div>
                     <div className="mt-4 flex flex-wrap gap-2">
                       {selectedHospital.specializations.map((specialization) => (
                         <span

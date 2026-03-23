@@ -9,6 +9,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { PlanUpgradeNudge } from "@/components/PlanGate";
+import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
+import { parseAndStoreDocument } from "@/lib/document-parser";
 import { getMockPlan, PLAN_LIMITS } from "@/lib/mock-plan";
 import { isSupabaseConfigured } from "@/lib/supabase";
 import { fileToBase64 } from "@/lib/utils";
@@ -95,6 +97,11 @@ export function UploadWorkspace({
         const uploadData = await uploadResponse.json();
         if (!uploadResponse.ok) {
           throw new Error(uploadData.error || "Upload failed");
+        }
+
+        if (PLAN_LIMITS[plan].aiTrialMatching) {
+          const supabase = createBrowserSupabaseClient();
+          parseAndStoreDocument(uploadData.document.id, uploadData.document.file_url, supabase).catch(console.error);
         }
 
         setItems((current) =>

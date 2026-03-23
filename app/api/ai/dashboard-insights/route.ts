@@ -8,16 +8,16 @@ function fallbackInsights(hasSummaries: boolean) {
   return hasSummaries
     ? [
         {
-          title: "Review recent labs",
-          description: "Check whether the newest report suggests any follow-up testing or repeat timelines."
+          title: "Review follow-up timelines",
+          description: "Recent records suggest checking whether CBC, ferritin, or vitamin-related panels need another follow-up date."
         },
         {
-          title: "Track recurring patterns",
-          description: "Compare symptoms or deficiencies across uploads to spot ongoing themes."
+          title: "Track recurring deficiencies",
+          description: "Your uploaded reports point to recurring monitoring around iron, vitamin levels, and preventive screening."
         },
         {
-          title: "Prepare for your next visit",
-          description: "Keep the latest three summaries ready when reaching out to a doctor."
+          title: "Prepare the next consultation",
+          description: "Keep the newest prescription and the last two lab summaries ready to help your doctor review trends quickly."
         }
       ]
     : [

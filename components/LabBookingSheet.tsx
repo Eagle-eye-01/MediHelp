@@ -22,6 +22,7 @@ export function LabBookingSheet({
       description="A mock partner commission booking flow for diagnostics."
       itemName={testName || "Selected test"}
       merchantName={labName || "Selected lab"}
+      // TODO: Integrate with lab booking API and Razorpay
       onClose={onClose}
       open={open}
       successMessage="Booking confirmed! You'll receive a confirmation shortly."

@@ -5,16 +5,25 @@ import { Badge } from "@/components/ui/badge";
 import type { LabWithTests } from "@/types";
 import { formatDate } from "@/lib/utils";
 
-const VERIFIED_PARTNERS = new Set(["Precision Labs", "CureQuest Diagnostics", "Zenith Path Labs"]);
+// TODO: Drive 'verified' flag from Supabase labs table
+const VERIFIED_PARTNERS = new Set([
+  "SRM Diagnostics Centre",
+  "Chengalpattu Precision Labs",
+  "OMR Zenith Path Labs"
+]);
 
 export function LabCard({
   lab,
   active,
-  onClick
+  onClick,
+  distanceKm,
+  recommended = false
 }: {
   lab: LabWithTests;
   active: boolean;
   onClick: () => void;
+  distanceKm?: number | null;
+  recommended?: boolean;
 }) {
   return (
     <Card
@@ -29,6 +38,11 @@ export function LabCard({
           {VERIFIED_PARTNERS.has(lab.name) ? (
             <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100">Verified Partner</Badge>
           ) : null}
+          {distanceKm != null ? (
+            <Badge className={recommended ? "bg-blue-50 text-blue-700" : "bg-slate-100 text-slate-600"}>
+              {distanceKm.toFixed(1)} km
+            </Badge>
+          ) : null}
         </div>
         <p className="mt-1 flex items-center gap-2 text-sm text-slate-500">
           <MapPin className="h-4 w-4" />
@@ -36,6 +50,9 @@ export function LabCard({
         </p>
       </div>
       <div className="grid gap-2 text-sm text-slate-600">
+        {recommended ? (
+          <p className="font-medium text-emerald-700">Recommended from your live location</p>
+        ) : null}
         <p className="flex items-center gap-2">
           <Phone className="h-4 w-4 text-primary" />
           {lab.contact}
