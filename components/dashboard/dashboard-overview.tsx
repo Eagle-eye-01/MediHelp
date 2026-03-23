@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import {
   Activity,
   ArrowRight,
+  ChevronLeft,
   FileText,
   HeartPulse,
   MapPin,
@@ -18,11 +19,11 @@ import { toast } from "sonner";
 import { PlanBadge } from "@/components/PlanBadge";
 import { AIInsightsCard } from "@/components/dashboard/AIInsightsCard";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useCountUp } from "@/lib/hooks/useCountUp";
 import { getMockPlan, PLAN_LIMITS, subscribeToMockPlan, type Plan } from "@/lib/mock-plan";
-import { formatDate } from "@/lib/utils";
+import { cn, formatDate } from "@/lib/utils";
 
 export function DashboardOverview({
   name,
@@ -116,28 +117,46 @@ export function DashboardOverview({
   return (
     <>
       <div className="min-w-0 space-y-8 overflow-x-hidden pb-10">
-        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-          <div className="min-w-0">
-            <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
-              Good morning, {name}
-            </h2>
-            <div className="mt-3">
-              <PlanBadge plan={plan} />
+        <section className="overflow-hidden rounded-[28px] border border-slate-200 bg-[linear-gradient(135deg,#FFFFFF_0%,#F8FAFC_48%,#EEF4FF_100%)] px-5 py-6 shadow-[0_24px_80px_-50px_rgba(15,23,42,0.28)] sm:rounded-[32px] sm:px-8 sm:py-8">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+            <div className="min-w-0 max-w-3xl">
+              <Link
+                className={cn(buttonVariants({ variant: "outline" }), "mb-5 inline-flex w-fit")}
+                href="/"
+              >
+                <ChevronLeft className="mr-2 h-4 w-4" />
+                Back to Home
+              </Link>
+              <p className="text-sm font-semibold uppercase tracking-[0.28em] text-blue-600">Dashboard overview</p>
+              <h2 className="mt-3 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
+                Good morning, {name}
+              </h2>
+              <div className="mt-4">
+                <PlanBadge plan={plan} />
+              </div>
+              <p className="mt-3 text-sm leading-7 text-slate-600 sm:text-base">
+                {new Date().toLocaleDateString("en-US", {
+                  weekday: "long",
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric"
+                })}
+              </p>
             </div>
-            <p className="mt-2 text-base text-slate-600">
-              {new Date().toLocaleDateString("en-US", {
-                weekday: "long",
-                year: "numeric",
-                month: "long",
-                day: "numeric"
-              })}
-            </p>
+            <div className="w-full lg:max-w-md">
+              <div className="rounded-[24px] border border-blue-100 bg-white/92 p-4">
+                <p className="text-sm font-semibold text-slate-950">Workspace summary</p>
+                <p className="mt-2 text-sm text-slate-600">
+                  Review uploads, AI insights, and nearby care from one calm dashboard before moving deeper into records or booking.
+                </p>
+                <Button className="mt-4 w-full shadow-[0_16px_40px_-24px_rgba(37,99,235,0.8)] sm:w-auto" onClick={handlePrepareSummary}>
+                  <Sparkles className="h-4 w-4" />
+                  Prepare AI Summary
+                </Button>
+              </div>
+            </div>
           </div>
-          <Button className="w-full shadow-[0_16px_40px_-24px_rgba(37,99,235,0.8)] md:w-auto" onClick={handlePrepareSummary}>
-            <Sparkles className="h-4 w-4" />
-            Prepare AI Summary
-          </Button>
-        </div>
+        </section>
 
         <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-5">
           {statCards.map((stat) => (
