@@ -1,17 +1,18 @@
-import { redirect } from "next/navigation";
-
+import { MediHelpLanding } from "@/components/marketing/medihelp-landing";
 import { isSupabaseConfigured } from "@/lib/supabase";
 import { createServerSupabaseClient } from "@/lib/supabase-server";
 
 export default async function HomePage() {
-  if (!isSupabaseConfigured()) {
-    redirect("/dashboard");
+  let authenticated = false;
+
+  if (isSupabaseConfigured()) {
+    const supabase = createServerSupabaseClient();
+    const {
+      data: { session }
+    } = await supabase.auth.getSession();
+
+    authenticated = Boolean(session);
   }
 
-  const supabase = createServerSupabaseClient();
-  const {
-    data: { session }
-  } = await supabase.auth.getSession();
-
-  redirect(session ? "/dashboard" : "/auth/login");
+  return <MediHelpLanding authenticated={authenticated} />;
 }

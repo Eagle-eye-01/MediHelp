@@ -114,10 +114,14 @@ export interface HealthInsight {
 }
 
 export interface TrialResult {
+  nctId?: string;
   trialName: string;
   matchScore: number;
   status: string;
   location: string;
   contact: string;
   description: string;
+  sponsor?: string;
+  eligibilitySummary?: string;
+  trialUrl?: string;
 }

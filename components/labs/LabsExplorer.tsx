@@ -95,7 +95,7 @@ export function LabsExplorer({
                   <h2 className="text-lg font-semibold text-slate-900">{selectedLab.name}</h2>
                   <p className="mt-2 text-sm text-slate-500">{selectedLab.location}</p>
                 </div>
-                <TestList tests={selectedLab.tests} />
+                <TestList labName={selectedLab.name} tests={selectedLab.tests} />
               </div>
             ) : null}
           </div>

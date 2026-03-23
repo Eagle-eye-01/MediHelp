@@ -44,6 +44,16 @@ const config: Config = {
       boxShadow: {
         soft: "0 20px 45px -30px rgba(37, 99, 235, 0.35)"
       },
+      keyframes: {
+        shake: {
+          '0%, 100%': { transform: 'translateX(0)' },
+          '10%, 30%, 50%, 70%, 90%': { transform: 'translateX(-4px)' },
+          '20%, 40%, 60%, 80%': { transform: 'translateX(4px)' },
+        }
+      },
+      animation: {
+        shake: 'shake 0.5s cubic-bezier(.36,.07,.19,.97) both',
+      },
       fontFamily: {
         sans: ["var(--font-manrope)", "sans-serif"],
         heading: ["var(--font-sora)", "sans-serif"]

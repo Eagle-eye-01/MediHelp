@@ -1,15 +1,17 @@
 "use client";
 
-import { Camera, Loader2, UploadCloud } from "lucide-react";
+import { Camera, ImagePlus, Loader2, UploadCloud } from "lucide-react";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
+import { PlanUpgradeNudge } from "@/components/PlanGate";
+import { getMockPlan, PLAN_LIMITS } from "@/lib/mock-plan";
 import { isSupabaseConfigured } from "@/lib/supabase";
-import { fileToBase64, makeSuggestedDocumentName } from "@/lib/utils";
+import { fileToBase64 } from "@/lib/utils";
 
 type UploadStatus = {
   name: string;
@@ -18,13 +20,19 @@ type UploadStatus = {
 };
 
 export function UploadWorkspace({
-  userId
+  userId,
+  currentDocumentCount
 }: {
   userId: string | null;
+  currentDocumentCount: number;
 }) {
+  const router = useRouter();
+  const uploadInputRef = useRef<HTMLInputElement | null>(null);
   const cameraInputRef = useRef<HTMLInputElement | null>(null);
   const [items, setItems] = useState<UploadStatus[]>([]);
   const [busy, setBusy] = useState(false);
+  const [documentCount, setDocumentCount] = useState(currentDocumentCount);
+  const [showUpgradeNudge, setShowUpgradeNudge] = useState(false);
 
   async function handleFiles(files: FileList | null) {
     if (!files?.length) {
@@ -44,12 +52,19 @@ export function UploadWorkspace({
       return;
     }
 
+    const plan = getMockPlan();
+    const limit = PLAN_LIMITS[plan].documents;
+    // TODO: Replace with real Supabase billing table
+    if (limit !== Infinity && documentCount + selected.length > limit) {
+      setShowUpgradeNudge(true);
+      toast.error("Free plan document limit reached.");
+      return;
+    }
+
     setBusy(true);
     setItems(selected.map((file) => ({ name: file.name, progress: 10, state: "queued" })));
 
     try {
-      const supabase = createBrowserSupabaseClient();
-
       for (let index = 0; index < selected.length; index += 1) {
         const file = selected[index];
 
@@ -59,56 +74,27 @@ export function UploadWorkspace({
           )
         );
 
-        const storagePath = `${userId}/${Date.now()}-${file.name}`;
-        const { error: uploadError } = await supabase.storage
-          .from("medical-documents")
-          .upload(storagePath, file, { upsert: true, contentType: file.type });
-
-        if (uploadError) {
-          throw uploadError;
-        }
-
         setItems((current) =>
           current.map((item, itemIndex) =>
             itemIndex === index ? { ...item, progress: 65, state: "analyzing" } : item
           )
         );
 
-        const {
-          data: { publicUrl }
-        } = supabase.storage.from("medical-documents").getPublicUrl(storagePath);
-
         const base64 = await fileToBase64(file);
-        const analysisResponse = await fetch("/api/ai/document-analyze", {
+        const uploadResponse = await fetch("/api/documents/upload", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
+            name: file.name,
+            size: file.size,
             base64,
             mimeType: file.type
           })
         });
-        const analysis = await analysisResponse.json();
 
-        const fileName =
-          analysis.suggestedFilename ||
-          makeSuggestedDocumentName(analysis.patientName, analysis.diseaseName, new Date().toISOString());
-
-        const { error: insertError } = await supabase.from("documents").insert({
-          user_id: userId,
-          file_name: fileName,
-          original_name: file.name,
-          file_url: publicUrl,
-          file_type: file.type,
-          file_size: file.size,
-          ai_summary: analysis.summary || "",
-          disease_name: analysis.diseaseName || "",
-          patient_name: analysis.patientName || "",
-          upload_date: new Date().toISOString(),
-          is_compressed: false
-        });
-
-        if (insertError) {
-          throw insertError;
+        const uploadData = await uploadResponse.json();
+        if (!uploadResponse.ok) {
+          throw new Error(uploadData.error || "Upload failed");
         }
 
         setItems((current) =>
@@ -119,6 +105,8 @@ export function UploadWorkspace({
       }
 
       toast.success("Documents uploaded successfully");
+      setDocumentCount((current) => current + selected.length);
+      setShowUpgradeNudge(false);
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Upload failed");
       setItems((current) =>
@@ -129,10 +117,33 @@ export function UploadWorkspace({
     }
   }
 
+  function openCameraPicker() {
+    if (busy) {
+      return;
+    }
+
+    if (!cameraInputRef.current) {
+      toast.error("Camera input is not available in this browser.");
+      return;
+    }
+
+    cameraInputRef.current.value = "";
+    cameraInputRef.current.click();
+    window.setTimeout(() => {
+      if (cameraInputRef.current && document.visibilityState === "visible") {
+        toast.message("If the camera did not open, your browser is showing the image picker instead.");
+      }
+    }, 900);
+  }
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col sm:flex-row gap-4 justify-center items-stretch max-w-2xl mx-auto">
-        <label className="flex-1 cursor-pointer">
+        <button
+          className="flex-1"
+          onClick={() => uploadInputRef.current?.click()}
+          type="button"
+        >
           <Card className="flex h-full cursor-pointer flex-col justify-between gap-4 p-6 hover:shadow-md active:scale-95">
             <UploadCloud className="h-10 w-10 text-primary" />
             <div>
@@ -143,17 +154,10 @@ export function UploadWorkspace({
             </div>
             <span className="text-sm font-medium text-primary">Choose files</span>
           </Card>
-          <input
-            className="hidden"
-            disabled={busy}
-            multiple
-            onChange={(event) => handleFiles(event.target.files)}
-            type="file"
-          />
-        </label>
+        </button>
         <button
           className="flex-1"
-          onClick={() => cameraInputRef.current?.click()}
+          onClick={openCameraPicker}
           type="button"
         >
           <Card className="flex h-full cursor-pointer flex-col justify-between gap-4 p-6 hover:shadow-md active:scale-95">
@@ -161,12 +165,20 @@ export function UploadWorkspace({
             <div>
               <h2 className="text-base sm:text-lg font-semibold text-slate-900">Click a picture</h2>
               <p className="mt-2 text-sm text-slate-500">
-                Use the camera on your phone to capture a new report instantly.
+                Open the camera on mobile, or use the image picker on desktop to capture or choose a photo.
               </p>
             </div>
             <span className="text-sm font-medium text-primary">Open camera</span>
           </Card>
         </button>
+        <input
+          className="hidden"
+          disabled={busy}
+          multiple
+          onChange={(event) => handleFiles(event.target.files)}
+          ref={uploadInputRef}
+          type="file"
+        />
         <input
           accept="image/*"
           capture="environment"
@@ -176,6 +188,13 @@ export function UploadWorkspace({
           type="file"
         />
       </div>
+      <div className="flex items-center justify-center gap-2 text-sm text-slate-500">
+        <ImagePlus className="h-4 w-4" />
+        Camera capture depends on device/browser permissions. Desktop browsers may open the image picker instead.
+      </div>
+      {showUpgradeNudge ? (
+        <PlanUpgradeNudge compact feature="Upload beyond 5 documents" requiredPlan="premium" />
+      ) : null}
       <div className="grid gap-4">
         {items.map((item) => (
           <Card className="p-4" key={item.name}>
@@ -193,7 +212,13 @@ export function UploadWorkspace({
         ))}
       </div>
       <div className="flex justify-end">
-        <Button disabled={busy} onClick={() => window.location.assign("/documents")}>
+        <Button
+          disabled={busy}
+          onClick={() => {
+            router.push("/documents");
+            router.refresh();
+          }}
+        >
           Review uploaded files
         </Button>
       </div>

@@ -27,14 +27,15 @@ export async function middleware(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   const { pathname } = request.nextUrl;
+  const forceLogin = request.nextUrl.searchParams.get("forceLogin") === "1";
   const isAuthRoute = pathname.startsWith("/auth");
-  const isProtectedRoute = !isAuthRoute;
+  const isProtectedRoute = !isAuthRoute && pathname !== "/" && pathname !== "/pricing";
 
   if (!user && isProtectedRoute) {
     return NextResponse.redirect(new URL("/auth/login", request.url));
   }
 
-  if (user && isAuthRoute) {
+  if (user && isAuthRoute && !forceLogin) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 

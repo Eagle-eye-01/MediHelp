@@ -26,7 +26,7 @@ export function ResponsiveModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex">
+    <div className="fixed inset-0 z-50 overflow-y-auto">
       <button
         aria-label="Close modal"
         className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
@@ -37,7 +37,7 @@ export function ResponsiveModal({
           "relative z-10 bg-white p-6 shadow-soft",
           isMobile
             ? "mt-auto w-full rounded-t-2xl max-h-[90vh] overflow-y-auto"
-            : "m-auto w-full max-w-lg rounded-2xl mx-4"
+            : "mx-auto my-8 w-full max-w-lg rounded-2xl max-h-[calc(100vh-4rem)] overflow-y-auto"
         )}
       >
         <div className="flex items-start justify-between gap-4">

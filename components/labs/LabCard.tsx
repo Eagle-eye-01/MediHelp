@@ -1,8 +1,11 @@
 import { Calendar, MapPin, Phone, Star } from "lucide-react";
 
 import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import type { LabWithTests } from "@/types";
 import { formatDate } from "@/lib/utils";
+
+const VERIFIED_PARTNERS = new Set(["Precision Labs", "CureQuest Diagnostics", "Zenith Path Labs"]);
 
 export function LabCard({
   lab,
@@ -21,7 +24,12 @@ export function LabCard({
       onClick={onClick}
     >
       <div>
-        <h3 className="text-base font-semibold text-slate-900">{lab.name}</h3>
+        <div className="flex items-center gap-2">
+          <h3 className="text-base font-semibold text-slate-900">{lab.name}</h3>
+          {VERIFIED_PARTNERS.has(lab.name) ? (
+            <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100">Verified Partner</Badge>
+          ) : null}
+        </div>
         <p className="mt-1 flex items-center gap-2 text-sm text-slate-500">
           <MapPin className="h-4 w-4" />
           {lab.location}

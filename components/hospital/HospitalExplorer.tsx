@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
+import { MockPaymentSheet } from "@/components/MockPaymentSheet";
 import { DoctorCard } from "@/components/hospital/DoctorCard";
 import { FilterPanel } from "@/components/hospital/FilterPanel";
 import { HospitalCard } from "@/components/hospital/HospitalCard";
@@ -14,6 +15,8 @@ import { Label } from "@/components/ui/label";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
 import { Textarea } from "@/components/ui/textarea";
 import type { Doctor, HospitalWithDoctors } from "@/types";
+
+const CONSULTATION_FEE = 799;
 
 export function HospitalExplorer({
   hospitals,
@@ -28,6 +31,7 @@ export function HospitalExplorer({
   const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
   const [message, setMessage] = useState("");
   const [booking, setBooking] = useState(false);
+  const [paymentOpen, setPaymentOpen] = useState(false);
 
   const filteredHospitals = useMemo(() => {
     return hospitals.filter((hospital) => {
@@ -47,6 +51,12 @@ export function HospitalExplorer({
 
   const selectedHospital =
     filteredHospitals.find((hospital) => hospital.id === selectedHospitalId) || filteredHospitals[0];
+
+  function resetBookingFlow() {
+    setSelectedDoctor(null);
+    setMessage("");
+    setPaymentOpen(false);
+  }
 
   async function handleBook() {
     if (!selectedDoctor) {
@@ -69,11 +79,10 @@ export function HospitalExplorer({
         throw new Error("Unable to book appointment");
       }
 
-      toast.success("Appointment request sent");
-      setSelectedDoctor(null);
-      setMessage("");
+      resetBookingFlow();
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Booking failed");
+      throw error;
     } finally {
       setBooking(false);
     }
@@ -91,8 +100,8 @@ export function HospitalExplorer({
           }))}
           title="Track location of user"
         />
-        <div className="flex flex-col lg:flex-row gap-4 h-full">
-          <div className="w-full lg:w-64 flex-shrink-0">
+        <div className="flex h-full flex-col gap-4 lg:flex-row">
+          <div className="w-full flex-shrink-0 lg:w-64">
             <FilterPanel
               description="Narrow the list by condition or surgery focus."
               title="Hospital Filters"
@@ -115,8 +124,8 @@ export function HospitalExplorer({
               </div>
             </FilterPanel>
           </div>
-          <div className="flex flex-col sm:flex-row flex-1 gap-4 min-w-0">
-            <div className="w-full sm:w-2/5 lg:w-1/3 overflow-y-auto space-y-4">
+          <div className="flex min-w-0 flex-1 flex-col gap-4 sm:flex-row">
+            <div className="w-full space-y-4 overflow-y-auto sm:w-2/5 lg:w-1/3">
               {filteredHospitals.length ? (
                 filteredHospitals.map((hospital) => (
                   <HospitalCard
@@ -133,7 +142,7 @@ export function HospitalExplorer({
                 />
               )}
             </div>
-            <div className="flex-1 min-w-0 overflow-y-auto space-y-4">
+            <div className="min-w-0 flex-1 space-y-4 overflow-y-auto">
               {selectedHospital ? (
                 <>
                   <div className="rounded-2xl border border-slate-100 bg-white p-5">
@@ -161,10 +170,11 @@ export function HospitalExplorer({
           </div>
         </div>
       </div>
+
       <ResponsiveModal
         description="Your last three document summaries will be shared as medical history."
-        onClose={() => setSelectedDoctor(null)}
-        open={Boolean(selectedDoctor)}
+        onClose={resetBookingFlow}
+        open={Boolean(selectedDoctor) && !paymentOpen}
         title={selectedDoctor ? `Book with ${selectedDoctor.name}` : "Book Appointment"}
       >
         <div className="space-y-4">
@@ -176,6 +186,9 @@ export function HospitalExplorer({
               ))}
             </ul>
           </div>
+          <div className="rounded-xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm text-blue-900">
+            Consultation fee: <span className="font-semibold">Rs. {CONSULTATION_FEE}</span>
+          </div>
           <div className="space-y-2">
             <Label>Your message</Label>
             <Textarea
@@ -185,12 +198,23 @@ export function HospitalExplorer({
             />
           </div>
           <div className="flex justify-end">
-            <Button disabled={booking} onClick={handleBook}>
-              {booking ? "Sending..." : "Confirm Appointment"}
-            </Button>
+            <Button onClick={() => setPaymentOpen(true)}>Continue to payment</Button>
           </div>
         </div>
       </ResponsiveModal>
+
+      <MockPaymentSheet
+        amount={CONSULTATION_FEE}
+        confirmLabel={booking ? "Booking..." : "Pay & confirm appointment"}
+        description="A mock hospital checkout flow to demonstrate care booking revenue."
+        itemName={selectedDoctor ? `Appointment with ${selectedDoctor.name}` : "Appointment"}
+        merchantName={selectedHospital?.name || "Selected hospital"}
+        onClose={() => setPaymentOpen(false)}
+        onConfirm={handleBook}
+        open={paymentOpen && Boolean(selectedDoctor)}
+        successMessage="Appointment confirmed! The hospital team will contact you shortly."
+        title="Hospital payment"
+      />
     </>
   );
 }

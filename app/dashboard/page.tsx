@@ -1,54 +1,59 @@
-import { AppShell } from "@/components/layout/AppShell";
-import { AIInsightsCard } from "@/components/dashboard/AIInsightsCard";
-import { HealthSummaryCard } from "@/components/dashboard/HealthSummaryCard";
-import { HealthTrendChart } from "@/components/dashboard/HealthTrendChart";
-import { PersonalDetailsAlert } from "@/components/dashboard/PersonalDetailsAlert";
-import { QuickLinkButton } from "@/components/dashboard/QuickLinkButton";
-import { getCurrentUserProfile, getUserDocuments } from "@/lib/data";
+import Link from "next/link";
+import { ChevronLeft } from "lucide-react";
+
+import { DashboardOverview } from "@/components/dashboard/dashboard-overview";
+import { buttonVariants } from "@/components/ui/button";
+import { getCurrentUserProfile, getHospitals, getUserDocuments } from "@/lib/data";
+import { cn } from "@/lib/utils";
+
+function buildTrendData(uploadDates: string[]) {
+  const now = new Date();
+  const formatter = new Intl.DateTimeFormat("en-US", { month: "short" });
+
+  return Array.from({ length: 6 }).map((_, index) => {
+    const date = new Date(now.getFullYear(), now.getMonth() - (5 - index), 1);
+    const label = formatter.format(date);
+    const uploads = uploadDates.filter((value) => {
+      const uploadDate = new Date(value);
+      return (
+        uploadDate.getFullYear() === date.getFullYear() &&
+        uploadDate.getMonth() === date.getMonth()
+      );
+    }).length;
+
+    return { label, uploads };
+  });
+}
 
 export default async function DashboardPage() {
-  const [{ profile }, documents] = await Promise.all([getCurrentUserProfile(), getUserDocuments()]);
+  const [{ profile }, documents, hospitals] = await Promise.all([
+    getCurrentUserProfile(),
+    getUserDocuments(),
+    getHospitals()
+  ]);
 
-  const chartBuckets = documents.reduce<Record<string, number>>((accumulator, document) => {
-    const key = new Date(document.upload_date).toLocaleDateString("en-IN", {
-      month: "short",
-      day: "2-digit"
-    });
-    accumulator[key] = (accumulator[key] || 0) + 1;
-    return accumulator;
-  }, {});
-
-  const chartData = Object.entries(chartBuckets).map(([date, uploads]) => ({
-    date,
-    uploads
-  }));
+  const summaries = documents.map((document) => document.ai_summary).filter(Boolean);
+  const conditionsTracked = new Set(
+    documents.map((document) => document.disease_name).filter(Boolean)
+  ).size;
+  const trendData = buildTrendData(documents.map((document) => document.upload_date));
 
   return (
-    <AppShell email={profile?.email} name={profile?.name}>
-      <div className="flex flex-col gap-4 sm:gap-6">
-        <div>
-          <h1 className="text-xl sm:text-2xl lg:text-3xl">MediHelp Health Summary</h1>
-          <p className="mt-2 text-sm sm:text-base text-slate-500">
-            Track your medical records, act on AI suggestions, and move quickly when you need care.
-          </p>
-        </div>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <HealthSummaryCard
-            lastUploadDate={documents[0]?.upload_date}
-            totalDocuments={documents.length}
-          />
-          <AIInsightsCard summaries={documents.map((document) => document.ai_summary).filter(Boolean)} />
-          <PersonalDetailsAlert missingDob={!profile?.dob} name={profile?.name} />
-        </div>
-        <div className="w-full">
-          <HealthTrendChart data={chartData} />
-        </div>
-        <div className="flex flex-wrap gap-3">
-          <QuickLinkButton href="/hospital" label="Hospital" />
-          <QuickLinkButton href="/labs" label="Labs" />
-          <QuickLinkButton href="/medicines" label="Medicine Store" />
-        </div>
-      </div>
-    </AppShell>
+    <div className="space-y-8 pb-10">
+      <Link className={cn(buttonVariants({ variant: "outline" }), "inline-flex")} href="/">
+        <ChevronLeft className="mr-2 h-4 w-4" />
+        Back to Home
+      </Link>
+
+      <DashboardOverview
+        conditionsTracked={conditionsTracked}
+        documentsCount={documents.length}
+        hospitalsNearby={hospitals.length}
+        lastUploadDate={documents[0]?.upload_date}
+        name={profile?.name || "MediHelp User"}
+        summaries={summaries}
+        trendData={trendData}
+      />
+    </div>
   );
 }
