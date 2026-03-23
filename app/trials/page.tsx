@@ -18,7 +18,13 @@ export default async function TrialsPage() {
         <InternalPageHeader
           actions={
             <div>
-              <div className="grid gap-3 sm:grid-cols-3">
+              <div className="rounded-[24px] border border-blue-100 bg-white/90 p-4 sm:hidden">
+                <p className="text-sm font-semibold text-slate-950">Trial matching context</p>
+                <p className="mt-2 text-sm text-slate-600">
+                  AI matching, local language support, and care-aware filters are ready in one focused search flow.
+                </p>
+              </div>
+              <div className="hidden gap-3 sm:grid sm:grid-cols-3">
                 <div className="rounded-[22px] border border-white bg-white/90 p-4">
                   <BrainCircuit className="h-5 w-5 text-indigo-600" />
                   <p className="mt-3 text-sm font-semibold text-slate-950">AI matching</p>
@@ -32,7 +38,7 @@ export default async function TrialsPage() {
                   <p className="mt-3 text-sm font-semibold text-slate-950">Care-aware filtering</p>
                 </div>
               </div>
-              <div className="mt-4 flex flex-wrap gap-2">
+              <div className="mt-4 hidden flex-wrap gap-2 sm:flex">
                 <Badge className="bg-indigo-50 text-indigo-700">Condition match scoring</Badge>
                 <Badge className="bg-blue-50 text-blue-700">City-based search</Badge>
                 <Badge className="bg-emerald-50 text-emerald-700">English, Tamil, Hindi</Badge>

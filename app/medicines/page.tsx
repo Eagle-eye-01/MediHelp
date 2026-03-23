@@ -16,7 +16,13 @@ export default async function MedicinesPage() {
         <InternalPageHeader
           actions={
             <div>
-              <div className="grid gap-3 sm:grid-cols-3">
+              <div className="rounded-[24px] border border-blue-100 bg-white/90 p-4 sm:hidden">
+                <p className="text-sm font-semibold text-slate-950">Medicine context</p>
+                <p className="mt-2 text-sm text-slate-600">
+                  Prescription search, AI OCR, and nearby pickup options stay together in one calm medicines flow.
+                </p>
+              </div>
+              <div className="hidden gap-3 sm:grid sm:grid-cols-3">
                 <div className="rounded-[22px] border border-white bg-white/90 p-4">
                   <Pill className="h-5 w-5 text-blue-600" />
                   <p className="mt-3 text-sm font-semibold text-slate-950">Readable results</p>
@@ -30,7 +36,7 @@ export default async function MedicinesPage() {
                   <p className="mt-3 text-sm font-semibold text-slate-950">Nearby pickup options</p>
                 </div>
               </div>
-              <div className="mt-4 flex flex-wrap gap-2">
+              <div className="mt-4 hidden flex-wrap gap-2 sm:flex">
                 <Badge className="bg-blue-50 text-blue-700">Sort by best price</Badge>
                 <Badge className="bg-emerald-50 text-emerald-700">Contact stores directly</Badge>
                 <Badge className="bg-indigo-50 text-indigo-700">Prescription upload supported</Badge>
