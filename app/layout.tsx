@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Manrope, Sora } from "next/font/google";
 import { Toaster } from "sonner";
 
@@ -17,6 +17,12 @@ const sora = Sora({
 export const metadata: Metadata = {
   title: "MediHelp",
   description: "Personal health management web app powered by Next.js, Supabase, and Gemini."
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover"
 };
 
 export default function RootLayout({
