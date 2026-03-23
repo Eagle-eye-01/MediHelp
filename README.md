@@ -78,3 +78,5 @@ A quick overview of the core directories:
 * `npm run build`: Builds the app for production.
 * `npm run start`: Starts the production server.
 * `npm run lint`: Runs ESLint to catch errors.
+
+* Thank you for reading.
