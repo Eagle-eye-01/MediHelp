@@ -12,7 +12,7 @@ export default async function MedicinesPage() {
 
   return (
     <AppShell email={profile?.email} name={profile?.name}>
-      <div className="space-y-8 pb-10">
+      <div className="min-w-0 space-y-8 overflow-x-hidden pb-10">
         <InternalPageHeader
           actions={
             <div>

@@ -36,11 +36,11 @@ export function PlanUpgradeNudge({
         compact ? "p-4" : "p-6"
       )}
     >
-      <div className="flex items-start gap-4">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
         <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-100 text-blue-700">
           <Lock className="h-5 w-5" />
         </div>
-        <div className="flex-1">
+        <div className="min-w-0 flex-1">
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">
             {feature}
           </p>
@@ -51,7 +51,7 @@ export function PlanUpgradeNudge({
           </p>
         </div>
         <Link
-          className={cn(buttonVariants({ variant: "default" }), "whitespace-nowrap")}
+          className={cn(buttonVariants({ variant: "default" }), "w-full justify-center text-center sm:w-auto")}
           href="/pricing"
         >
           {copy.cta}

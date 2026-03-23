@@ -185,14 +185,14 @@ export function MedicationReminderWorkspace() {
   }
 
   return (
-    <div className="space-y-5">
+    <div className="min-w-0 space-y-5 overflow-x-hidden">
       <Card className="rounded-[28px] border border-slate-200 bg-white/92 p-5 shadow-sm">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex items-center gap-3">
+          <div className="flex min-w-0 items-center gap-3">
             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-100 text-amber-700">
               <BellRing className="h-5 w-5" />
             </div>
-            <div>
+            <div className="min-w-0">
               <p className="text-base font-semibold text-slate-950">Medication reminders</p>
               <p className="text-sm text-slate-500">
                 Log doses, get browser reminders, and auto-track the stock left after each dose.
@@ -209,8 +209,8 @@ export function MedicationReminderWorkspace() {
         </div>
       </Card>
 
-      <div className="grid gap-5 xl:grid-cols-[0.95fr_1.05fr]">
-        <Card className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm">
+      <div className="grid min-w-0 gap-5 xl:grid-cols-[0.95fr_1.05fr]">
+        <Card className="min-w-0 rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm">
           <p className="text-lg font-semibold text-slate-950">Add medicine reminder</p>
           <div className="mt-5 grid gap-4">
             <Input
@@ -262,19 +262,19 @@ export function MedicationReminderWorkspace() {
           </div>
         </Card>
 
-        <Card className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm">
+        <Card className="min-w-0 rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm">
           <p className="text-lg font-semibold text-slate-950">Active medications</p>
           <div className="mt-5 space-y-4">
             {reminders.length ? (
               reminders.map((reminder) => (
-                <div className="rounded-[24px] border border-slate-200 bg-slate-50 p-4" key={reminder.id}>
+                <div className="min-w-0 rounded-[24px] border border-slate-200 bg-slate-50 p-4" key={reminder.id}>
                   <div className="flex flex-wrap items-start justify-between gap-3">
-                    <div>
+                    <div className="min-w-0">
                       <div className="flex items-center gap-2">
                         <Pill className="h-4 w-4 text-blue-600" />
-                        <p className="text-base font-semibold text-slate-950">{reminder.name}</p>
+                        <p className="break-words text-base font-semibold text-slate-950">{reminder.name}</p>
                       </div>
-                      <p className="mt-1 text-sm text-slate-600">{reminder.dosage}</p>
+                      <p className="mt-1 break-words text-sm text-slate-600">{reminder.dosage}</p>
                     </div>
                     <div className="flex items-center gap-3">
                       <Switch

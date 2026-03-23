@@ -35,13 +35,13 @@ export function PartnerProgramBanner() {
     <>
       <div className="rounded-[28px] border border-emerald-200 bg-[linear-gradient(135deg,#ECFDF5_0%,#FFFFFF_100%)] px-5 py-4 shadow-sm">
         <div className="flex items-start justify-between gap-4">
-          <div className="text-sm leading-7 text-slate-700">
+          <div className="min-w-0 text-sm leading-7 text-slate-700">
             <span className="font-semibold text-slate-950">
               Are you a CRO or pharma company?
             </span>{" "}
             MediHelp connects you with pre-matched, consenting patients.{" "}
             <button
-              className="font-semibold text-emerald-700 hover:text-emerald-800"
+              className="break-words font-semibold text-emerald-700 hover:text-emerald-800"
               onClick={() => setOpen(true)}
               type="button"
             >
