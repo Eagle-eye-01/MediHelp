@@ -102,8 +102,8 @@ export function TrialsExplorer({
   }
 
   return (
-    <div className="space-y-6">
-      <div className="rounded-[32px] border border-slate-200 bg-white p-5 shadow-sm">
+    <div className="min-w-0 space-y-6 overflow-x-hidden">
+      <div className="rounded-[28px] border border-slate-200 bg-white p-4 shadow-sm sm:rounded-[32px] sm:p-5">
         <div className="mb-5 flex flex-wrap items-center gap-3">
           <div className="inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1.5 text-sm font-medium text-blue-700">
             <MapPin className="h-4 w-4" />
@@ -111,7 +111,7 @@ export function TrialsExplorer({
           </div>
         </div>
 
-        <div className="grid gap-3 xl:grid-cols-[1.3fr_0.6fr_0.8fr_auto]">
+        <div className="grid min-w-0 gap-3 xl:grid-cols-[1.3fr_0.6fr_0.8fr_auto]">
           <Input
             onChange={(event) => setCondition(event.target.value)}
             placeholder={copy.conditionPlaceholder}
@@ -130,7 +130,7 @@ export function TrialsExplorer({
             ))}
           </select>
 
-          <div className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3">
+          <div className="min-w-0 w-full rounded-xl border border-slate-200 bg-white px-4 py-3">
             <Label>
               {copy.ageLabel}: {ageRange[0]} - {ageRange[1]}
             </Label>
@@ -178,10 +178,10 @@ export function TrialsExplorer({
           </Button>
         </div>
 
-        <div className="mt-4 flex flex-wrap gap-2">
+        <div className="mt-4 flex flex-wrap gap-2 overflow-hidden">
           {languages.map((item) => (
             <button
-              className={`rounded-full px-4 py-2 text-sm font-medium active:scale-95 ${
+              className={`max-w-full rounded-full px-4 py-2 text-sm font-medium active:scale-95 ${
                 language === item
                   ? "bg-primary text-white"
                   : "border border-slate-200 bg-white text-slate-600"
@@ -197,7 +197,7 @@ export function TrialsExplorer({
       </div>
 
       {trials.length ? (
-        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+        <div className="grid min-w-0 grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
           {trials.map((trial) => (
             <TrialCard key={trial.nctId || trial.trialName} language={language} trial={trial} />
           ))}
