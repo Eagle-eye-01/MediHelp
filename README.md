@@ -45,7 +45,7 @@ Make sure you have [Node.js](https://nodejs.org/) (v18 or higher) installed on y
   pnpm install
   ```
 3. Set up your environment variables. Create a `.env.local` file in the root directory and add the following keys (refer to `.env.local.example` if available):  
-  ```
+  ```bash
   # Supabase
   NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
