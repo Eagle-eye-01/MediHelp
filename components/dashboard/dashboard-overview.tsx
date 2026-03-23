@@ -115,7 +115,7 @@ export function DashboardOverview({
 
   return (
     <>
-      <div className="space-y-8 pb-10">
+      <div className="min-w-0 space-y-8 overflow-x-hidden pb-10">
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div className="min-w-0">
             <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
@@ -194,21 +194,21 @@ export function DashboardOverview({
                   <p className="text-sm text-slate-500">Your activity over the last 6 months</p>
                 </div>
               </div>
-              <div className="mt-8 overflow-x-auto">
-                <div className="flex h-64 min-w-[520px] items-end gap-3 rounded-[28px] bg-[linear-gradient(180deg,#F8FAFC_0%,#EEF4FF_100%)] p-4 sm:gap-4 sm:p-6">
+              <div className="mt-8 overflow-hidden">
+                <div className="flex h-56 items-end gap-2 rounded-[28px] bg-[linear-gradient(180deg,#F8FAFC_0%,#EEF4FF_100%)] p-3 sm:h-64 sm:gap-4 sm:p-6">
                   {trendData.map((point) => (
                     <div className="flex flex-1 flex-col items-center gap-3" key={point.label}>
                       <div className="flex w-full items-end justify-center">
                         <div
                           className="w-full rounded-t-[18px] bg-gradient-to-t from-blue-600 via-indigo-500 to-blue-300 shadow-[0_18px_40px_-24px_rgba(37,99,235,0.9)] transition-all duration-700"
                           style={{
-                            height: `${Math.max(18, (point.uploads / chartMax) * 180)}px`
+                            height: `${Math.max(16, (point.uploads / chartMax) * 140)}px`
                           }}
                         />
                       </div>
                       <div className="text-center">
-                        <p className="text-sm font-semibold text-slate-800">{point.uploads}</p>
-                        <p className="text-xs uppercase tracking-[0.18em] text-slate-500">{point.label}</p>
+                        <p className="text-xs font-semibold text-slate-800 sm:text-sm">{point.uploads}</p>
+                        <p className="text-[10px] uppercase tracking-[0.14em] text-slate-500 sm:text-xs sm:tracking-[0.18em]">{point.label}</p>
                       </div>
                     </div>
                   ))}
