@@ -1,5 +1,7 @@
 # MediHelp
 
+Please visit us at https://medi-help-neon.vercel.app
+
 MediHelp is a comprehensive healthcare platform built to connect patients with essential medical services and clinical trials. It empowers users to manage their health records, locate nearby hospitals and labs, track their prescribed medicines, and find relevant clinical trials using advanced AI (RAG process) and medical document parsing.
 
 ## 🚀 Tech Stack
